@@ -22,7 +22,8 @@ Track all modules here. Update when adding new ones:
 | `numo_marketing` | Active | Marketing extensions |
 | `creative_studio` | Active | Creative/design workflow |
 | `numo_crm_restrictions` | Active | CRM access restrictions |
-| `ops_dashboard` | Active | Operations dashboard |
+| `ops_dashboard` | Active | OPS dashboard iframe — embeds ops.amro.pro inside Odoo |
+| `app_hider` | Active | Hides selected apps from Odoo menu |
 
 ## Where Modules Live
 
