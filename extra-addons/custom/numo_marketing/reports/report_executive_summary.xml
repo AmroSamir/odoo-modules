@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="report_executive_summary">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-set="data" t-value="doc._get_report_data()"/>
+                <t t-set="kpis" t-value="data['kpis']"/>
+                <t t-call="web.external_layout">
+                    <div class="page" style="font-family: 'Helvetica Neue', Arial, sans-serif; color: #1a1a2e;">
+
+                        <!-- Header -->
+                        <div style="border-bottom: 3px solid #6c5ce7; padding-bottom: 16px; margin-bottom: 24px;">
+                            <h1 style="font-size: 28px; font-weight: 700; color: #1a1a2e; margin: 0;">
+                                Executive Summary
+                            </h1>
+                            <p style="font-size: 14px; color: #636e72; margin: 6px 0 0 0;">
+                                <t t-esc="data['report'].name"/> |
+                                <t t-esc="data['period_label']"/>
+                            </p>
+                        </div>
+
+                        <!-- KPI Cards Row 1: Spend / Revenue / Profit / ROAS -->
+                        <div style="display: flex; gap: 16px; margin-bottom: 20px;">
+                            <div style="flex: 1; background: #f8f9fa; border-radius: 8px; padding: 16px; border-left: 4px solid #e17055;">
+                                <p style="font-size: 11px; color: #636e72; text-transform: uppercase; letter-spacing: 0.5px; margin: 0;">Total Spend</p>
+                                <p style="font-size: 24px; font-weight: 700; color: #1a1a2e; margin: 4px 0 0 0;">
+                                    <t t-esc="'{:,.2f}'.format(kpis['total_spend'])"/> SAR
+                                </p>
+                            </div>
+                            <div style="flex: 1; background: #f8f9fa; border-radius: 8px; padding: 16px; border-left: 4px solid #00b894;">
+                                <p style="font-size: 11px; color: #636e72; text-transform: uppercase; letter-spacing: 0.5px; margin: 0;">Revenue</p>
+                                <p style="font-size: 24px; font-weight: 700; color: #1a1a2e; margin: 4px 0 0 0;">
+                                    <t t-esc="'{:,.2f}'.format(kpis['total_revenue'])"/> SAR
+                                </p>
+                            </div>
+                            <div style="flex: 1; background: #f8f9fa; border-radius: 8px; padding: 16px; border-left: 4px solid #0984e3;">
+                                <p style="font-size: 11px; color: #636e72; text-transform: uppercase; letter-spacing: 0.5px; margin: 0;">Profit</p>
+                                <p style="font-size: 24px; font-weight: 700; margin: 4px 0 0 0;"
+                                   t-attf-style="color: #{kpis['profit'] >= 0 and '#00b894' or '#d63031'};">
+                                    <t t-esc="'{:,.2f}'.format(kpis['profit'])"/> SAR
+                                </p>
+                            </div>
+                            <div style="flex: 1; background: #f8f9fa; border-radius: 8px; padding: 16px; border-left: 4px solid #6c5ce7;">
+                                <p style="font-size: 11px; color: #636e72; text-transform: uppercase; letter-spacing: 0.5px; margin: 0;">ROAS</p>
+                                <p style="font-size: 24px; font-weight: 700; color: #1a1a2e; margin: 4px 0 0 0;">
+                                    <t t-esc="'{:.2f}'.format(kpis['roas'])"/>x
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- KPI Cards Row 2: Leads / Won / CPL / CPA -->
+                        <div style="display: flex; gap: 16px; margin-bottom: 28px;">
+                            <div style="flex: 1; background: #f8f9fa; border-radius: 8px; padding: 16px; border-left: 4px solid #fdcb6e;">
+                                <p style="font-size: 11px; color: #636e72; text-transform: uppercase; letter-spacing: 0.5px; margin: 0;">Total Leads</p>
+                                <p style="font-size: 24px; font-weight: 700; color: #1a1a2e; margin: 4px 0 0 0;">
+                                    <t t-esc="'{:,}'.format(kpis['total_leads'])"/>
+                                </p>
+                            </div>
+                            <div style="flex: 1; background: #f8f9fa; border-radius: 8px; padding: 16px; border-left: 4px solid #00cec9;">
+                                <p style="font-size: 11px; color: #636e72; text-transform: uppercase; letter-spacing: 0.5px; margin: 0;">Won Deals</p>
+                                <p style="font-size: 24px; font-weight: 700; color: #1a1a2e; margin: 4px 0 0 0;">
+                                    <t t-esc="'{:,}'.format(kpis['total_won'])"/>
+                                </p>
+                            </div>
+                            <div style="flex: 1; background: #f8f9fa; border-radius: 8px; padding: 16px; border-left: 4px solid #e17055;">
+                                <p style="font-size: 11px; color: #636e72; text-transform: uppercase; letter-spacing: 0.5px; margin: 0;">Cost per Lead</p>
+                                <p style="font-size: 24px; font-weight: 700; color: #1a1a2e; margin: 4px 0 0 0;">
+                                    <t t-esc="'{:,.2f}'.format(kpis['cpl'])"/> SAR
+                                </p>
+                            </div>
+                            <div style="flex: 1; background: #f8f9fa; border-radius: 8px; padding: 16px; border-left: 4px solid #d63031;">
+                                <p style="font-size: 11px; color: #636e72; text-transform: uppercase; letter-spacing: 0.5px; margin: 0;">Cost per Acquisition</p>
+                                <p style="font-size: 24px; font-weight: 700; color: #1a1a2e; margin: 4px 0 0 0;">
+                                    <t t-esc="'{:,.2f}'.format(kpis['cpa'])"/> SAR
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Platform Performance Table -->
+                        <t t-if="data['platform_breakdown']">
+                            <h2 style="font-size: 18px; font-weight: 600; color: #1a1a2e; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 2px solid #dfe6e9;">
+                                Platform Performance
+                            </h2>
+                            <table style="width: 100%; border-collapse: collapse; margin-bottom: 28px; font-size: 12px;">
+                                <thead>
+                                    <tr style="background: #1a1a2e; color: white;">
+                                        <th style="padding: 10px 12px; text-align: left; border-radius: 6px 0 0 0;">Platform</th>
+                                        <th style="padding: 10px 12px; text-align: right;">Spend (SAR)</th>
+                                        <th style="padding: 10px 12px; text-align: right;">Revenue (SAR)</th>
+                                        <th style="padding: 10px 12px; text-align: right;">Leads</th>
+                                        <th style="padding: 10px 12px; text-align: right;">ROAS</th>
+                                        <th style="padding: 10px 12px; text-align: right;">CPL (SAR)</th>
+                                        <th style="padding: 10px 12px; text-align: right; border-radius: 0 6px 0 0;">% of Spend</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="data['platform_breakdown']" t-as="p">
+                                        <tr t-attf-style="background: #{p_odd and '#f8f9fa' or '#ffffff'};">
+                                            <td style="padding: 8px 12px; font-weight: 600;"><t t-esc="p['platform']"/></td>
+                                            <td style="padding: 8px 12px; text-align: right;"><t t-esc="'{:,.2f}'.format(p['spend'])"/></td>
+                                            <td style="padding: 8px 12px; text-align: right;"><t t-esc="'{:,.2f}'.format(p['revenue'])"/></td>
+                                            <td style="padding: 8px 12px; text-align: right;"><t t-esc="'{:,}'.format(p['leads'])"/></td>
+                                            <td style="padding: 8px 12px; text-align: right; font-weight: 600;"><t t-esc="'{:.2f}'.format(p['roas'])"/>x</td>
+                                            <td style="padding: 8px 12px; text-align: right;"><t t-esc="'{:,.2f}'.format(p['cpl'])"/></td>
+                                            <td style="padding: 8px 12px; text-align: right;"><t t-esc="'{:.1f}'.format(p['spend_pct'])"/>%</td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </t>
+
+                        <!-- Lead Funnel -->
+                        <t t-if="data['funnel']">
+                            <h2 style="font-size: 18px; font-weight: 600; color: #1a1a2e; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 2px solid #dfe6e9;">
+                                Lead Funnel
+                            </h2>
+                            <table style="width: 100%; border-collapse: collapse; margin-bottom: 28px; font-size: 12px;">
+                                <thead>
+                                    <tr style="background: #6c5ce7; color: white;">
+                                        <th style="padding: 10px 12px; text-align: left; border-radius: 6px 0 0 0;">Stage</th>
+                                        <th style="padding: 10px 12px; text-align: right;">Count</th>
+                                        <th style="padding: 10px 12px; text-align: right;">% of Previous</th>
+                                        <th style="padding: 10px 12px; text-align: right; border-radius: 0 6px 0 0;">% of Top</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="data['funnel']" t-as="stage">
+                                        <tr t-attf-style="background: #{stage_odd and '#f8f9fa' or '#ffffff'};">
+                                            <td style="padding: 8px 12px; font-weight: 600;"><t t-esc="stage['name']"/></td>
+                                            <td style="padding: 8px 12px; text-align: right;"><t t-esc="'{:,}'.format(stage['value'])"/></td>
+                                            <td style="padding: 8px 12px; text-align: right;"><t t-esc="'{:.1f}'.format(stage['pct_of_prev'])"/>%</td>
+                                            <td style="padding: 8px 12px; text-align: right;"><t t-esc="'{:.1f}'.format(stage['pct_of_top'])"/>%</td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </t>
+
+                        <!-- Footer -->
+                        <div style="margin-top: 24px; padding-top: 12px; border-top: 1px solid #dfe6e9; font-size: 10px; color: #b2bec3; text-align: center;">
+                            Generated by Numo Marketing Analytics |
+                            <t t-esc="context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d %H:%M')"/>
+                        </div>
+
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

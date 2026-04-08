@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!-- Executive Summary PDF Report -->
+    <!-- ============================================================ -->
+    <record id="action_report_executive_summary" model="ir.actions.report">
+        <field name="name">Marketing: Executive Summary</field>
+        <field name="model">numo.marketing.report</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">numo_marketing.report_executive_summary</field>
+        <field name="report_file">numo_marketing.report_executive_summary</field>
+        <field name="print_report_name">'Executive_Summary_%s' % object.name</field>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- Campaign Detail PDF Report -->
+    <!-- ============================================================ -->
+    <record id="action_report_campaign_detail" model="ir.actions.report">
+        <field name="name">Marketing: Campaign Detail</field>
+        <field name="model">numo.marketing.report</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">numo_marketing.report_campaign_detail</field>
+        <field name="report_file">numo_marketing.report_campaign_detail</field>
+        <field name="print_report_name">'Campaign_Detail_%s' % object.name</field>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- Channel Performance PDF Report -->
+    <!-- ============================================================ -->
+    <record id="action_report_channel_performance" model="ir.actions.report">
+        <field name="name">Marketing: Channel Performance</field>
+        <field name="model">numo.marketing.report</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">numo_marketing.report_channel_performance</field>
+        <field name="report_file">numo_marketing.report_channel_performance</field>
+        <field name="print_report_name">'Channel_Performance_%s' % object.name</field>
+        <field name="binding_type">report</field>
+    </record>
+
+</odoo>

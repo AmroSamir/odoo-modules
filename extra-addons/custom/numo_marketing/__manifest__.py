@@ -1,6 +1,6 @@
 {
     'name': 'Numo Marketing Analytics',
-    'version': '19.0.2.0.0',
+    'version': '19.0.2.2.0',
     'category': 'Marketing',
     'summary': 'Cross-channel marketing reporting hub — Whatagraph-style dashboards, automated PDF reports, 5 ad platform integrations',
     'description': """
@@ -37,6 +37,13 @@
         'security/ir_rule.xml',
         # Data
         'data/ir_cron.xml',
+        'data/mail_template.xml',
+        'data/report_seed_data.xml',
+        # Reports (QWeb templates + actions)
+        'reports/report_actions.xml',
+        'reports/report_executive_summary.xml',
+        'reports/report_campaign_detail.xml',
+        'reports/report_channel_performance.xml',
         # Views
         'views/marketing_account_views.xml',
         'views/marketing_campaign_views.xml',

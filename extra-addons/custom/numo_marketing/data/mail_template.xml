@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!-- ============================================================ -->
+    <!-- Marketing Report Email Template -->
+    <!-- ============================================================ -->
+    <record id="mail_template_marketing_report" model="mail.template">
+        <field name="name">Marketing: Report Delivery</field>
+        <field name="model_id" ref="model_numo_marketing_report"/>
+        <field name="subject">{{ object.name }} - Marketing Report</field>
+        <field name="email_from">{{ (object.create_uid.email_formatted or user.email_formatted) }}</field>
+        <field name="body_html" type="html">
+<div style="margin: 0; padding: 0; font-family: 'Helvetica Neue', Arial, sans-serif;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 600px; margin: 0 auto; background: #ffffff;">
+        <!-- Header -->
+        <tr>
+            <td style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); padding: 32px 24px; text-align: center;">
+                <h1 style="color: #ffffff; font-size: 24px; font-weight: 700; margin: 0;">
+                    Marketing Report
+                </h1>
+                <p style="color: #a29bfe; font-size: 14px; margin: 8px 0 0 0;">
+                    {{ object.name }}
+                </p>
+            </td>
+        </tr>
+
+        <!-- Body -->
+        <tr>
+            <td style="padding: 24px;">
+                <p style="font-size: 14px; color: #2d3436; line-height: 1.6; margin: 0 0 16px 0;">
+                    Hello,
+                </p>
+                <p style="font-size: 14px; color: #2d3436; line-height: 1.6; margin: 0 0 16px 0;">
+                    Your <strong>{{ object.get_report_type_label() if object.get_report_type_label else object.report_type }}</strong> marketing report is attached as a PDF.
+                </p>
+
+                <!-- Report Info Card -->
+                <table width="100%" cellpadding="0" cellspacing="0" style="background: #f8f9fa; border-radius: 8px; margin: 16px 0;">
+                    <tr>
+                        <td style="padding: 16px;">
+                            <table width="100%" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td style="font-size: 12px; color: #636e72; padding: 4px 0;">Report Type</td>
+                                    <td style="font-size: 12px; color: #1a1a2e; font-weight: 600; text-align: right; padding: 4px 0;">{{ object.report_type }}</td>
+                                </tr>
+                                <tr>
+                                    <td style="font-size: 12px; color: #636e72; padding: 4px 0;">Date Range</td>
+                                    <td style="font-size: 12px; color: #1a1a2e; font-weight: 600; text-align: right; padding: 4px 0;">{{ object.date_range }}</td>
+                                </tr>
+                                <tr>
+                                    <td style="font-size: 12px; color: #636e72; padding: 4px 0;">Frequency</td>
+                                    <td style="font-size: 12px; color: #1a1a2e; font-weight: 600; text-align: right; padding: 4px 0;">{{ object.frequency }}</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+
+                <p style="font-size: 14px; color: #2d3436; line-height: 1.6; margin: 16px 0 0 0;">
+                    For the full interactive dashboard, log into
+                    <a href="{{ object.get_base_url() }}" style="color: #6c5ce7; text-decoration: none; font-weight: 600;">Odoo</a>
+                    and navigate to Marketing Analytics.
+                </p>
+            </td>
+        </tr>
+
+        <!-- Footer -->
+        <tr>
+            <td style="background: #f8f9fa; padding: 16px 24px; text-align: center; border-top: 1px solid #dfe6e9;">
+                <p style="font-size: 11px; color: #b2bec3; margin: 0;">
+                    Numo Marketing Analytics | Automated Report
+                </p>
+            </td>
+        </tr>
+    </table>
+</div>
+        </field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+
+</odoo>

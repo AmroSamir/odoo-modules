@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!-- ============================================================ -->
+    <!-- Pre-built Report Configurations -->
+    <!-- ============================================================ -->
+
+    <!-- 1. Weekly Executive Summary -->
+    <record id="report_config_executive_weekly" model="numo.marketing.report">
+        <field name="name">Weekly Executive Summary</field>
+        <field name="report_type">executive_summary</field>
+        <field name="frequency">weekly</field>
+        <field name="date_range">last_7_days</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- 2. Monthly Executive Summary -->
+    <record id="report_config_executive_monthly" model="numo.marketing.report">
+        <field name="name">Monthly Executive Summary</field>
+        <field name="report_type">executive_summary</field>
+        <field name="frequency">monthly</field>
+        <field name="date_range">last_month</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- 3. Weekly Campaign Deep-Dive -->
+    <record id="report_config_campaign_weekly" model="numo.marketing.report">
+        <field name="name">Weekly Campaign Report</field>
+        <field name="report_type">campaign_detail</field>
+        <field name="frequency">weekly</field>
+        <field name="date_range">last_7_days</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- 4. Monthly Channel Performance -->
+    <record id="report_config_channel_monthly" model="numo.marketing.report">
+        <field name="name">Monthly Channel Performance</field>
+        <field name="report_type">channel_performance</field>
+        <field name="frequency">monthly</field>
+        <field name="date_range">last_month</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- 5. On-Demand Project ROI -->
+    <record id="report_config_project_roi" model="numo.marketing.report">
+        <field name="name">Project ROI Report</field>
+        <field name="report_type">project_roi</field>
+        <field name="frequency">on_demand</field>
+        <field name="date_range">last_30_days</field>
+        <field name="active" eval="True"/>
+    </record>
+
+</odoo>
