@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- Top-level application menu -->
+    <menuitem id="menu_numo_marketing_root"
+              name="Marketing Analytics"
+              web_icon="numo_marketing,static/description/icon.png"
+              sequence="25"/>
+
+    <!-- Dashboard -->
+    <menuitem id="menu_marketing_dashboard"
+              name="Dashboard"
+              parent="menu_numo_marketing_root"
+              action="action_marketing_dashboard"
+              sequence="1"/>
+
+    <!-- Campaign Spend -->
+    <menuitem id="menu_campaign_spend"
+              name="Campaign Spend"
+              parent="menu_numo_marketing_root"
+              action="action_campaign_spend"
+              sequence="10"/>
+
+    <!-- Manual Spend Entry -->
+    <menuitem id="menu_manual_spend_wizard"
+              name="Manual Spend Entry"
+              parent="menu_numo_marketing_root"
+              action="action_manual_spend_wizard"
+              groups="sales_team.group_sale_salesman"
+              sequence="20"/>
+
+    <!-- Configuration -->
+    <menuitem id="menu_numo_marketing_config"
+              name="Configuration"
+              parent="menu_numo_marketing_root"
+              sequence="90"/>
+
+    <menuitem id="menu_campaign_mapping"
+              name="Campaign Mappings"
+              parent="menu_numo_marketing_config"
+              action="action_campaign_mapping"
+              sequence="10"/>
+
+    <menuitem id="menu_ad_sync_log"
+              name="Sync Log"
+              parent="menu_numo_marketing_config"
+              action="action_ad_sync_log"
+              groups="sales_team.group_sale_manager"
+              sequence="20"/>
+
+
+</odoo>

@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!-- Campaign Spend: Search View                                   -->
+    <!-- ============================================================ -->
+    <record id="numo_campaign_spend_search" model="ir.ui.view">
+        <field name="name">numo.campaign.spend.search</field>
+        <field name="model">numo.campaign.spend</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="campaign_id"/>
+                <field name="platform"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- Campaign Spend: List View                                     -->
+    <!-- ============================================================ -->
+    <record id="numo_campaign_spend_list" model="ir.ui.view">
+        <field name="name">numo.campaign.spend.list</field>
+        <field name="model">numo.campaign.spend</field>
+        <field name="arch" type="xml">
+            <list default_order="date desc">
+                <field name="date"/>
+                <field name="platform"/>
+                <field name="campaign_id"/>
+                <field name="project_analytic_id"/>
+                <field name="campaign_type" optional="hide"/>
+                <field name="impressions" sum="Total"/>
+                <field name="clicks" sum="Total"/>
+                <field name="spend_amount" sum="Total"/>
+                <field name="leads_count" sum="Total"/>
+                <field name="won_count" sum="Total"/>
+                <field name="revenue" sum="Total"/>
+                <field name="ctr" optional="show"/>
+                <field name="cpc" optional="hide"/>
+                <field name="cpl" optional="show"/>
+                <field name="cpa" optional="hide"/>
+                <field name="roas" optional="show"/>
+                <field name="profit" sum="Total" optional="show"/>
+                <field name="sync_source" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- Campaign Spend: Form View                                     -->
+    <!-- ============================================================ -->
+    <record id="numo_campaign_spend_form" model="ir.ui.view">
+        <field name="name">numo.campaign.spend.form</field>
+        <field name="model">numo.campaign.spend</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_recompute_metrics" type="object"
+                            string="Recompute CRM Metrics" class="btn-secondary"
+                            groups="sales_team.group_sale_manager"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group string="Campaign Details">
+                            <field name="date"/>
+                            <field name="platform"/>
+                            <field name="campaign_id"/>
+                            <field name="campaign_type"/>
+                            <field name="project_analytic_id"/>
+                            <field name="mapping_id" readonly="1"/>
+                        </group>
+                        <group string="Ad Platform Metrics">
+                            <field name="impressions"/>
+                            <field name="clicks"/>
+                            <field name="spend_amount"/>
+                            <field name="conversions_platform"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="CRM Metrics">
+                            <group>
+                                <group>
+                                    <field name="leads_count"/>
+                                    <field name="qualified_count"/>
+                                    <field name="won_count"/>
+                                    <field name="lost_count"/>
+                                </group>
+                                <group>
+                                    <field name="revenue"/>
+                                    <field name="profit"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="KPIs">
+                            <group>
+                                <group>
+                                    <field name="ctr"/>
+                                    <field name="cpc"/>
+                                    <field name="cpl"/>
+                                    <field name="cpa"/>
+                                </group>
+                                <group>
+                                    <field name="roas"/>
+                                    <field name="conversion_rate"/>
+                                    <field name="lead_to_sale_rate"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="UTM &amp; Tracking">
+                            <group>
+                                <group>
+                                    <field name="source_id"/>
+                                    <field name="medium_id"/>
+                                    <field name="external_id"/>
+                                </group>
+                                <group>
+                                    <field name="sync_source"/>
+                                    <field name="analytic_line_id"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Time Dimensions">
+                            <group>
+                                <group>
+                                    <field name="year"/>
+                                    <field name="month"/>
+                                </group>
+                                <group>
+                                    <field name="week_number"/>
+                                    <field name="day_of_week"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- Campaign Spend: Pivot View                                    -->
+    <!-- ============================================================ -->
+    <record id="numo_campaign_spend_pivot" model="ir.ui.view">
+        <field name="name">numo.campaign.spend.pivot</field>
+        <field name="model">numo.campaign.spend</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="project_analytic_id" type="row"/>
+                <field name="platform" type="col"/>
+                <field name="spend_amount" type="measure"/>
+                <field name="leads_count" type="measure"/>
+                <field name="won_count" type="measure"/>
+                <field name="revenue" type="measure"/>
+                <field name="profit" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- Campaign Spend: Graph View                                    -->
+    <!-- ============================================================ -->
+    <record id="numo_campaign_spend_graph" model="ir.ui.view">
+        <field name="name">numo.campaign.spend.graph</field>
+        <field name="model">numo.campaign.spend</field>
+        <field name="arch" type="xml">
+            <graph type="bar">
+                <field name="month" type="row"/>
+                <field name="spend_amount" type="measure"/>
+                <field name="revenue" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- Campaign Spend: Action                                        -->
+    <!-- ============================================================ -->
+    <record id="action_campaign_spend" model="ir.actions.act_window">
+        <field name="name">Campaign Spend</field>
+        <field name="res_model">numo.campaign.spend</field>
+        <field name="view_mode">list,form,pivot,graph</field>
+        <field name="context">{}</field>
+    </record>
+
+</odoo>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- Client Action: Marketing Dashboard -->
+    <record id="action_marketing_dashboard" model="ir.actions.client">
+        <field name="name">Marketing Dashboard</field>
+        <field name="tag">numo_marketing.marketing_dashboard</field>
+    </record>
+
+</odoo>

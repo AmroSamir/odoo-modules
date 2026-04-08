@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+
+    <!-- Popover: Replace Mark Done with Interested/Lost buttons + dropdown for classify activities -->
+    <t t-inherit="mail.ActivityListPopoverItem" t-inherit-mode="extension">
+        <xpath expr="//button[hasclass('o-mail-ActivityListPopoverItem-markAsDone')]" position="after">
+            <t t-if="isClassifyActivity">
+                <button class="btn btn-sm btn-success btn-link"
+                        title="مهتم / Interested"
+                        aria-label="Interested"
+                        t-on-click="onClickInterested">
+                    <i class="fa fa-check"/> مهتم
+                </button>
+                <button class="btn btn-sm btn-danger btn-link"
+                        title="غير مهتم / Lost"
+                        aria-label="Lost"
+                        t-on-click="onClickLost">
+                    <i class="fa fa-times"/> خسارة
+                </button>
+                <!-- Dropdown for future actions -->
+                <div class="btn-group">
+                    <button class="btn btn-sm btn-link dropdown-toggle"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                            title="More Actions">
+                        <i class="fa fa-ellipsis-v"/>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" t-on-click="onClickInterested">
+                            <i class="fa fa-check text-success me-2"/> مهتم / Interested
+                        </a></li>
+                        <li><a class="dropdown-item" t-on-click="onClickLost">
+                            <i class="fa fa-times text-danger me-2"/> غير مهتم / Lost
+                        </a></li>
+                        <li><hr class="dropdown-divider"/></li>
+                        <li><a class="dropdown-item disabled" href="#">
+                            <i class="fa fa-clock-o text-muted me-2"/> إعادة جدولة / Reschedule (قريباً)
+                        </a></li>
+                    </ul>
+                </div>
+            </t>
+        </xpath>
+    </t>
+
+    <!-- Inline activity: Replace Mark Done with Interested/Lost buttons for classify activities -->
+    <t t-inherit="mail.Activity" t-inherit-mode="extension">
+        <xpath expr="//button[hasclass('o-mail-Activity-markDone')]" position="after">
+            <t t-if="isClassifyActivity">
+                <button class="btn btn-link btn-success p-0 me-3" t-on-click="onClickInterested">
+                    <i class="fa fa-check"/> مهتم / Interested
+                </button>
+                <button class="btn btn-link btn-danger p-0 me-3" t-on-click="onClickLost">
+                    <i class="fa fa-times"/> غير مهتم / Lost
+                </button>
+                <!-- Dropdown for future actions -->
+                <div class="btn-group">
+                    <button class="btn btn-link p-0 dropdown-toggle"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                        <i class="fa fa-ellipsis-h"/>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" t-on-click="onClickInterested">
+                            <i class="fa fa-check text-success me-2"/> مهتم / Interested
+                        </a></li>
+                        <li><a class="dropdown-item" t-on-click="onClickLost">
+                            <i class="fa fa-times text-danger me-2"/> غير مهتم / Lost
+                        </a></li>
+                        <li><hr class="dropdown-divider"/></li>
+                        <li><a class="dropdown-item disabled" href="#">
+                            <i class="fa fa-clock-o text-muted me-2"/> إعادة جدولة / Reschedule (قريباً)
+                        </a></li>
+                        <li><a class="dropdown-item disabled" href="#">
+                            <i class="fa fa-exchange text-muted me-2"/> تحويل لمندوب آخر / Reassign (قريباً)
+                        </a></li>
+                    </ul>
+                </div>
+            </t>
+        </xpath>
+        <!-- Hide standard Mark Done for classify activities -->
+        <xpath expr="//button[hasclass('o-mail-Activity-markDone')]" position="attributes">
+            <attribute name="t-if">!isClassifyActivity</attribute>
+        </xpath>
+    </t>
+
+</templates>

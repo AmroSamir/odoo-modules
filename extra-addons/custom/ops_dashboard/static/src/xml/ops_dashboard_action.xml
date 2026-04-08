@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="ops_dashboard.OpsDashboardAction">
+        <div class="o_action" style="height: 100%; display: flex; flex-direction: column;">
+
+            <!-- Toolbar with open-in-new-tab button -->
+            <div style="display: flex; align-items: center; justify-content: space-between;
+                        padding: 8px 16px; background: #f8f9fa; border-bottom: 1px solid #dee2e6;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <i class="fa fa-tachometer" style="font-size: 18px; color: #714B67;"/>
+                    <span style="font-size: 16px; font-weight: 600; color: #333;">Ops Dashboard</span>
+                </div>
+                <button class="btn btn-sm btn-outline-primary"
+                        t-on-click="openInNewTab"
+                        title="Open in new tab">
+                    <i class="fa fa-external-link me-1"/>
+                    Open in New Tab
+                </button>
+            </div>
+
+            <!-- Iframe embedding the dashboard -->
+            <iframe t-att-src="dashboardUrl"
+                    style="flex: 1; width: 100%; border: none;"
+                    allow="fullscreen"
+                    loading="lazy"/>
+
+        </div>
+    </t>
+
+</templates>

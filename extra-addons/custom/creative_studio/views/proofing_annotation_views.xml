@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Tree View -->
+    <record id="proofing_annotation_view_tree" model="ir.ui.view">
+        <field name="name">proofing.annotation.tree</field>
+        <field name="model">proofing.annotation</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="author_id" widget="many2one_avatar_user"/>
+                <field name="file_id"/>
+                <field name="version_id"/>
+                <field name="annotation_type" widget="badge"/>
+                <field name="page_number" optional="show"/>
+                <field name="timestamp_seconds" optional="show"/>
+                <field name="body"/>
+                <field name="reply_count"/>
+                <field name="is_resolved" widget="boolean"/>
+                <field name="create_date"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="proofing_annotation_view_form" model="ir.ui.view">
+        <field name="name">proofing.annotation.form</field>
+        <field name="model">proofing.annotation</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_resolve" string="Mark Resolved"
+                            type="object" class="btn-success"
+                            invisible="is_resolved"/>
+                    <button name="action_reopen" string="Reopen"
+                            type="object"
+                            invisible="not is_resolved"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="body"/>
+                        <field name="body"/>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="author_id" widget="many2one_avatar_user"/>
+                            <field name="version_id"/>
+                            <field name="file_id"/>
+                            <field name="project_id"/>
+                        </group>
+                        <group>
+                            <field name="annotation_type"/>
+                            <field name="x_percent"
+                                   invisible="annotation_type != 'point'"/>
+                            <field name="y_percent"
+                                   invisible="annotation_type != 'point'"/>
+                            <field name="page_number"
+                                   invisible="annotation_type != 'point'"/>
+                            <field name="timestamp_seconds"
+                                   invisible="annotation_type != 'timestamp'"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="is_resolved"/>
+                            <field name="resolved_by" invisible="not is_resolved"/>
+                            <field name="resolved_date" invisible="not is_resolved"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Replies" name="replies">
+                            <field name="reply_ids">
+                                <list editable="bottom">
+                                    <field name="author_id" widget="many2one_avatar_user"/>
+                                    <field name="body"/>
+                                    <field name="create_date" readonly="1"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="proofing_annotation_view_search" model="ir.ui.view">
+        <field name="name">proofing.annotation.search</field>
+        <field name="model">proofing.annotation</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="author_id"/>
+                <field name="project_id"/>
+                <field name="file_id"/>
+                <filter name="unresolved" string="Unresolved"
+                        domain="[('is_resolved', '=', False)]"/>
+                <filter name="resolved" string="Resolved"
+                        domain="[('is_resolved', '=', True)]"/>
+                <filter name="my_annotations" string="My Annotations"
+                        domain="[('author_id', '=', uid)]"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="proofing_annotation_action" model="ir.actions.act_window">
+        <field name="name">Annotations</field>
+        <field name="res_model">proofing.annotation</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="proofing_annotation_view_search"/>
+        <field name="context">{'search_default_unresolved': 1}</field>
+    </record>
+
+</odoo>

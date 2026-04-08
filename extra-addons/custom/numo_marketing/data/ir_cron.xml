@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- Daily CRM Metrics Update -->
+    <record id="cron_update_crm_metrics" model="ir.cron">
+        <field name="name">Marketing: Update CRM Metrics</field>
+        <field name="model_id" ref="model_numo_campaign_spend"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_update_crm_metrics()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+
+        <field name="active">True</field>
+    </record>
+
+    <!-- Google Ads Daily Sync (3:00 AM) -->
+    <record id="cron_sync_google_ads" model="ir.cron">
+        <field name="name">Marketing: Sync Google Ads</field>
+        <field name="model_id" ref="model_numo_campaign_spend"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_sync_google_ads()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+
+        <field name="active">False</field>
+    </record>
+
+    <!-- Meta Ads Daily Sync (3:10 AM) -->
+    <record id="cron_sync_meta" model="ir.cron">
+        <field name="name">Marketing: Sync Meta Ads</field>
+        <field name="model_id" ref="model_numo_campaign_spend"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_sync_meta()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+
+        <field name="active">False</field>
+    </record>
+
+    <!-- TikTok Ads Daily Sync (3:20 AM) -->
+    <record id="cron_sync_tiktok" model="ir.cron">
+        <field name="name">Marketing: Sync TikTok Ads</field>
+        <field name="model_id" ref="model_numo_campaign_spend"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_sync_tiktok()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+
+        <field name="active">False</field>
+    </record>
+
+    <!-- Snapchat Ads Daily Sync (3:30 AM) -->
+    <record id="cron_sync_snapchat" model="ir.cron">
+        <field name="name">Marketing: Sync Snapchat Ads</field>
+        <field name="model_id" ref="model_numo_campaign_spend"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_sync_snapchat()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+
+        <field name="active">False</field>
+    </record>
+
+    <!-- X (Twitter) Ads Daily Sync (3:40 AM) -->
+    <record id="cron_sync_x_ads" model="ir.cron">
+        <field name="name">Marketing: Sync X Ads</field>
+        <field name="model_id" ref="model_numo_campaign_spend"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_sync_x_ads()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+
+        <field name="active">False</field>
+    </record>
+
+</odoo>

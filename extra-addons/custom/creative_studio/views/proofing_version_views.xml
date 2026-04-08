@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="proofing_version_view_tree" model="ir.ui.view">
+        <field name="name">proofing.version.tree</field>
+        <field name="model">proofing.version</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="file_id"/>
+                <field name="version_number"/>
+                <field name="filename"/>
+                <field name="uploaded_by" widget="many2one_avatar_user"/>
+                <field name="upload_date"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="proofing_version_view_form" model="ir.ui.view">
+        <field name="name">proofing.version.form</field>
+        <field name="model">proofing.version</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="file_id"/>
+                            <field name="version_number"/>
+                        </group>
+                        <group>
+                            <field name="uploaded_by" widget="many2one_avatar_user"/>
+                            <field name="upload_date"/>
+                            <field name="mimetype"/>
+                        </group>
+                    </group>
+                    <group string="File">
+                        <field name="file_data" filename="filename"/>
+                        <field name="filename"/>
+                    </group>
+                    <field name="notes" placeholder="Version notes..."/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="proofing_version_action" model="ir.actions.act_window">
+        <field name="name">Versions</field>
+        <field name="res_model">proofing.version</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+</odoo>

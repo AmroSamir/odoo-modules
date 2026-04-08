@@ -1,0 +1,247 @@
+/* ==========================================================================
+   Numo Marketing Dashboard — Odoo CSS Variables (dark mode + RTL safe)
+   ========================================================================== */
+
+.numo_mkt_dashboard {
+    padding: 16px 24px;
+    background: var(--o-webclient-background-color);
+    color: var(--o-main-text-color);
+    min-height: 100%;
+}
+
+/* ---------- Loading ---------- */
+.numo_mkt_loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 0;
+}
+
+/* ---------- Header ---------- */
+.numo_mkt_header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+.numo_mkt_title {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--o-main-text-color);
+}
+
+/* ---------- Filters ---------- */
+.numo_mkt_filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: flex-end;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    background: var(--o-view-background-color);
+    border: 1px solid var(--o-border-color);
+    border-radius: 8px;
+}
+.numo_mkt_filter_group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 140px;
+}
+.numo_mkt_filter_group label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--o-main-text-color);
+    opacity: 0.7;
+}
+.numo_mkt_filter_group .form-control,
+.numo_mkt_filter_group .form-select {
+    background: var(--o-webclient-background-color);
+    color: var(--o-main-text-color);
+    border-color: var(--o-border-color);
+}
+.numo_mkt_filter_actions {
+    display: flex;
+    gap: 6px;
+    align-items: flex-end;
+    padding-bottom: 1px;
+}
+
+/* ---------- KPI Cards Grid ---------- */
+.numo_mkt_kpi_grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+    margin-bottom: 16px;
+}
+.numo_mkt_kpi_card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    background: var(--o-view-background-color);
+    border: 1px solid var(--o-border-color);
+    border-radius: 8px;
+    border-left: 4px solid var(--o-brand-primary, #714b67);
+    transition: box-shadow 0.15s ease;
+}
+.numo_mkt_kpi_card:hover {
+    box-shadow: 0 2px 8px var(--o-shadow-color, rgba(0, 0, 0, 0.1));
+}
+.numo_kpi_icon {
+    font-size: 1.5rem;
+    opacity: 0.6;
+}
+.numo_kpi_content {
+    flex: 1;
+    min-width: 0;
+}
+.numo_kpi_value {
+    font-size: 1.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--o-main-text-color);
+}
+.numo_kpi_label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    opacity: 0.7;
+}
+.numo_kpi_unit {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    opacity: 0.5;
+    align-self: flex-start;
+    margin-top: 4px;
+}
+
+/* KPI color accents — custom properties for theme overridability */
+.numo_mkt_dashboard {
+    --numo-kpi-spend:   #ef4444;
+    --numo-kpi-revenue: #22c55e;
+    --numo-kpi-profit:  #f59e0b;
+    --numo-kpi-roas:    #8b5cf6;
+    --numo-kpi-leads:   #3b82f6;
+    --numo-kpi-won:     #10b981;
+    --numo-kpi-cpl:     #f97316;
+    --numo-kpi-l2s:     #06b6d4;
+}
+.numo_kpi_spend   { border-left-color: var(--numo-kpi-spend); }
+.numo_kpi_revenue { border-left-color: var(--numo-kpi-revenue); }
+.numo_kpi_profit  { border-left-color: var(--numo-kpi-profit); }
+.numo_kpi_roas    { border-left-color: var(--numo-kpi-roas); }
+.numo_kpi_leads   { border-left-color: var(--numo-kpi-leads); }
+.numo_kpi_won     { border-left-color: var(--numo-kpi-won); }
+.numo_kpi_cpl     { border-left-color: var(--numo-kpi-cpl); }
+.numo_kpi_l2s     { border-left-color: var(--numo-kpi-l2s); }
+
+.numo_kpi_spend .numo_kpi_icon   { color: var(--numo-kpi-spend); }
+.numo_kpi_revenue .numo_kpi_icon { color: var(--numo-kpi-revenue); }
+.numo_kpi_profit .numo_kpi_icon  { color: var(--numo-kpi-profit); }
+.numo_kpi_roas .numo_kpi_icon    { color: var(--numo-kpi-roas); }
+.numo_kpi_leads .numo_kpi_icon   { color: var(--numo-kpi-leads); }
+.numo_kpi_won .numo_kpi_icon     { color: var(--numo-kpi-won); }
+.numo_kpi_cpl .numo_kpi_icon     { color: var(--numo-kpi-cpl); }
+.numo_kpi_l2s .numo_kpi_icon     { color: var(--numo-kpi-l2s); }
+
+/* ---------- Secondary KPIs ---------- */
+.numo_mkt_kpi_secondary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    background: var(--o-view-background-color);
+    border: 1px solid var(--o-border-color);
+    border-radius: 8px;
+}
+.numo_mkt_kpi_mini {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 90px;
+}
+.numo_mini_label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    opacity: 0.6;
+}
+.numo_mini_value {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+/* ---------- Charts ---------- */
+.numo_mkt_charts_row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+.numo_mkt_chart_card {
+    padding: 16px;
+    background: var(--o-view-background-color);
+    border: 1px solid var(--o-border-color);
+    border-radius: 8px;
+    min-height: 300px;
+    position: relative;
+}
+.numo_chart_wide {
+    flex: 2;
+}
+.numo_chart_narrow {
+    flex: 1;
+}
+.numo_chart_full {
+    flex: 1;
+}
+
+/* ---------- Top Campaigns Table ---------- */
+.numo_mkt_table_card {
+    padding: 16px;
+    background: var(--o-view-background-color);
+    border: 1px solid var(--o-border-color);
+    border-radius: 8px;
+    margin-bottom: 16px;
+}
+.numo_mkt_table_card h4 {
+    margin-bottom: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+}
+.numo_mkt_table_card .table {
+    color: var(--o-main-text-color);
+    margin-bottom: 0;
+}
+.numo_mkt_table_card .table thead th {
+    border-bottom-color: var(--o-border-color);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    opacity: 0.7;
+}
+.numo_mkt_table_card .table td {
+    border-color: var(--o-border-color);
+    vertical-align: middle;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 768px) {
+    .numo_mkt_kpi_grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .numo_mkt_charts_row {
+        flex-direction: column;
+    }
+    .numo_mkt_filters {
+        flex-direction: column;
+    }
+    .numo_mkt_filter_group {
+        min-width: 100%;
+    }
+}

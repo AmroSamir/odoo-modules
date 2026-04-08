@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="creative_studio.ProjectDashboard">
+        <div class="proofing-dashboard o_action">
+            <div t-if="state.loading" class="d-flex justify-content-center align-items-center py-5">
+                <div class="spinner-border text-primary" role="status"/>
+            </div>
+
+            <div t-if="!state.loading and state.project" class="h-100 d-flex flex-column">
+                <!-- Header -->
+                <div class="proofing-header d-flex align-items-center px-4 py-3">
+                    <button class="btn btn-link p-0 me-3" t-on-click="onBackToProjects"
+                            style="color: var(--o-main-text-color);">
+                        <i class="fa fa-arrow-left fa-lg"/>
+                    </button>
+                    <h2 class="mb-0 me-auto">
+                        <t t-esc="state.project.name"/>
+                    </h2>
+                    <t t-if="state.project.campaign_id">
+                        <span class="badge proofing-campaign-badge ms-3"
+                              t-on-click="onCampaignClick"
+                              t-att-title="T.viewCampaign"
+                              role="button">
+                            <i class="fa fa-bullhorn me-1"/>
+                            <t t-esc="state.project.campaign_name"/>
+                        </span>
+                    </t>
+                </div>
+
+                <!-- Step Columns Header -->
+                <div class="proofing-matrix-header d-flex border-bottom">
+                    <div class="proofing-file-col px-3 py-2 border-end d-flex align-items-center"
+                         style="min-width: 400px; flex: 0 0 400px;">
+                        <div class="dropdown me-3">
+                            <button class="btn btn-link p-0"
+                                    data-bs-toggle="dropdown"
+                                    style="color: var(--o-main-text-color);"
+                                    t-att-title="T.sortFiles">
+                                <i class="fa fa-sliders"/>
+                            </button>
+                            <ul class="dropdown-menu proofing-dropdown" style="min-width: 200px;">
+                                <li class="px-3 py-1 small fw-bold text-muted text-uppercase"><t t-esc="T.sortBy"/></li>
+                                <li>
+                                    <a class="dropdown-item d-flex align-items-center"
+                                       href="#" t-on-click.prevent="() => this.setSortBy('newest')">
+                                        <i t-att-class="'fa me-2 ' + (state.sortBy === 'newest' ? 'fa-dot-circle-o text-primary' : 'fa-circle-o')"
+                                           style="font-size: 0.9em;"/>
+                                        <t t-esc="T.newestFile"/>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item d-flex align-items-center"
+                                       href="#" t-on-click.prevent="() => this.setSortBy('name')">
+                                        <i t-att-class="'fa me-2 ' + (state.sortBy === 'name' ? 'fa-dot-circle-o text-primary' : 'fa-circle-o')"
+                                           style="font-size: 0.9em;"/>
+                                        <t t-esc="T.fileName"/>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <span class="text-muted">
+                            <t t-esc="T.allFiles"/> <strong class="ms-1"><t t-esc="state.fileCount"/></strong>
+                        </span>
+                        <span class="ms-auto"/>
+                        <button class="btn btn-primary btn-sm" t-on-click="onUploadFile">
+                            <i class="fa fa-upload me-1"/> <t t-esc="T.uploadFile"/>
+                        </button>
+                    </div>
+
+                    <t t-foreach="state.steps" t-as="step" t-key="step.id">
+                        <div class="proofing-step-col px-3 py-2 border-end"
+                             style="min-width: 200px; flex: 1;">
+                            <div class="d-flex align-items-center mb-2">
+                                <span class="fw-bold"><t t-esc="step.name"/></span>
+                                <div class="dropdown ms-auto">
+                                    <button class="btn btn-link btn-sm p-0"
+                                            data-bs-toggle="dropdown"
+                                            style="color: var(--o-main-text-color); opacity: 0.5;"
+                                            t-on-click.stop="() => {}">
+                                        <i class="fa fa-ellipsis-v"/>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end proofing-dropdown">
+                                        <li>
+                                            <a class="dropdown-item" href="#"
+                                               t-on-click.prevent.stop="() => this.onAddReviewer(step)">
+                                                <i class="fa fa-user-plus me-2"/><t t-esc="T.manageReviewers"/>
+                                            </a>
+                                        </li>
+                                        <li><hr class="dropdown-divider"/></li>
+                                        <li>
+                                            <a class="dropdown-item text-danger" href="#"
+                                               t-on-click.prevent.stop="() => this.onDeleteStep(step)">
+                                                <i class="fa fa-trash me-2"/><t t-esc="T.deleteThisReview"/>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center gap-1 flex-wrap">
+                                <button class="proofing-add-reviewer-btn rounded-circle border d-flex align-items-center justify-content-center"
+                                        style="width: 32px; height: 32px; min-width: 32px;"
+                                        t-att-title="T.inviteReviewers"
+                                        t-on-click="() => this.onAddReviewer(step)">
+                                    <i class="fa fa-plus" style="font-size: 0.75em;"/>
+                                </button>
+                                <t t-foreach="step.reviewers" t-as="reviewer" t-key="reviewer.id">
+                                    <img t-att-src="reviewer.avatar_url"
+                                         t-att-title="reviewer.name"
+                                         class="rounded-circle proofing-reviewer-avatar"
+                                         width="32" height="32"
+                                         style="object-fit: cover; border: 2px solid var(--o-view-background-color); margin-left: -4px;"/>
+                                </t>
+                                <t t-if="step.reviewers.length === 0">
+                                    <span class="text-muted small ms-1"><t t-esc="T.noReviewers"/></span>
+                                </t>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+
+                <!-- File Rows -->
+                <div class="proofing-matrix-body flex-grow-1 overflow-auto">
+                    <t t-if="state.files.length === 0">
+                        <div class="text-center py-5 text-muted">
+                            <i class="fa fa-cloud-upload fa-3x mb-3 d-block"/>
+                            <h4><t t-esc="T.noFilesYet"/></h4>
+                            <p><t t-esc="T.clickUpload"/></p>
+                        </div>
+                    </t>
+
+                    <t t-foreach="sortedFiles" t-as="file" t-key="file.id">
+                        <div class="proofing-file-row d-flex border-bottom align-items-center"
+                             t-att-class="{'proofing-row-alt': file_index % 2 === 0}">
+                            <div class="proofing-file-col d-flex align-items-center px-3 py-2 border-end"
+                                 style="min-width: 400px; flex: 0 0 400px;">
+                                <div class="proofing-thumb me-3 d-flex align-items-center justify-content-center rounded"
+                                     style="width: 100px; height: 65px; min-width: 100px; overflow: hidden; cursor: pointer;"
+                                     t-on-click="() => this.onFileClick(file)">
+                                    <t t-if="file.thumbnail_url">
+                                        <img t-att-src="file.thumbnail_url"
+                                             style="width: 100%; height: 100%; object-fit: contain;"/>
+                                    </t>
+                                    <t t-else="">
+                                        <i t-att-class="'fa ' + getFileIcon(file.file_type) + ' fa-lg text-white'"/>
+                                    </t>
+                                </div>
+                                <div class="flex-grow-1 overflow-hidden me-2">
+                                    <div class="text-truncate fw-semibold">
+                                        <t t-esc="file.name"/>
+                                    </div>
+                                    <div class="d-flex align-items-center gap-2 mt-1">
+                                        <span class="badge bg-secondary rounded-pill"
+                                              t-on-click.stop="() => this.toggleVersions(file.id)"
+                                              style="cursor: pointer;">
+                                            v<t t-esc="file.version"/>
+                                            <i t-att-class="'fa ms-1 ' + (isExpanded(file.id) ? 'fa-chevron-up' : 'fa-chevron-down')"
+                                               style="font-size: 0.7em;"/>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center gap-1">
+                                    <button class="btn btn-link btn-sm p-0 proofing-icon-btn"
+                                            t-att-title="T.uploadNewVersion"
+                                            t-on-click.stop="() => this.onUploadNewVersion(file)">
+                                        <i class="fa fa-upload"/>
+                                    </button>
+                                    <div class="dropdown">
+                                        <button class="btn btn-link btn-sm p-0 proofing-icon-btn"
+                                                data-bs-toggle="dropdown"
+                                                t-on-click.stop="() => {}">
+                                            <i class="fa fa-ellipsis-v"/>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end proofing-dropdown">
+                                            <li>
+                                                <a class="dropdown-item" href="#"
+                                                   t-on-click.prevent.stop="() => this.onShowInfo(file)">
+                                                    <i class="fa fa-info-circle me-2"/><t t-esc="T.moreInfo"/>
+                                                </a>
+                                            </li>
+                                            <li><hr class="dropdown-divider"/></li>
+                                            <li>
+                                                <a class="dropdown-item"
+                                                   t-att-href="file.download_url" download="">
+                                                    <i class="fa fa-download me-2"/>
+                                                    <t t-esc="T.downloadVersion"/> <t t-esc="file.version"/>
+                                                </a>
+                                            </li>
+                                            <li><hr class="dropdown-divider"/></li>
+                                            <li>
+                                                <a class="dropdown-item text-danger" href="#"
+                                                   t-on-click.prevent.stop="() => this.onDeleteVersion(file)">
+                                                    <i class="fa fa-trash me-2"/>
+                                                    <t t-esc="T.deleteVersion"/> <t t-esc="file.version"/>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item text-danger" href="#"
+                                                   t-on-click.prevent.stop="() => this.onDeleteAllVersions(file)">
+                                                    <i class="fa fa-trash me-2"/><t t-esc="T.deleteAllVersions"/>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <t t-foreach="state.steps" t-as="step" t-key="step.id">
+                                <div class="proofing-step-col px-3 py-2 border-end d-flex align-items-center"
+                                     style="min-width: 200px; flex: 1;">
+                                    <t t-set="review" t-value="getFileReview(file, step.id)"/>
+                                    <t t-if="review.state === 'not_started'">
+                                        <button class="btn btn-sm btn-outline-secondary proofing-start-review-btn"
+                                                t-on-click.stop="() => this.onStartReview(file, step)">
+                                            <t t-esc="T.startReview"/>
+                                        </button>
+                                    </t>
+                                    <t t-if="review.state !== 'not_started'">
+                                        <div class="d-flex align-items-center gap-2 flex-grow-1"
+                                             style="cursor: pointer;"
+                                             t-on-click.stop="() => this.onCellClick(file, step)">
+                                            <span class="small fw-semibold" t-att-style="'color: ' + getStateColor(review.state)">
+                                                <t t-esc="getStateLabel(review.state)"/>
+                                            </span>
+                                            <span class="rounded-circle d-inline-block"
+                                                  t-att-style="'width: 10px; height: 10px; background-color: ' + getStateColor(review.state)"/>
+                                            <span class="small text-muted">
+                                                <t t-esc="review.decision_summary"/>
+                                            </span>
+                                        </div>
+                                        <div class="dropdown proofing-cell-menu ms-auto">
+                                            <button class="btn btn-link btn-sm p-0 proofing-icon-btn"
+                                                    data-bs-toggle="dropdown"
+                                                    t-on-click.stop="() => {}">
+                                                <i class="fa fa-ellipsis-v"/>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end proofing-dropdown">
+                                                <li>
+                                                    <a class="dropdown-item" href="#"
+                                                       t-on-click.prevent.stop="() => this.onFileClick(file)">
+                                                        <i class="fa fa-external-link me-2"/><t t-esc="T.openReview"/>
+                                                    </a>
+                                                </li>
+                                                <li><hr class="dropdown-divider"/></li>
+                                                <li>
+                                                    <a class="dropdown-item text-danger" href="#"
+                                                       t-on-click.prevent.stop="() => this.onDeleteFileReview(file, step)">
+                                                        <i class="fa fa-trash me-2"/><t t-esc="T.deleteThisReview"/>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </t>
+                                </div>
+                            </t>
+                        </div>
+
+                        <t t-if="isExpanded(file.id)">
+                            <t t-foreach="file.versions" t-as="version" t-key="version.id">
+                                <t t-if="version.number !== file.version">
+                                    <div class="proofing-file-row proofing-version-row d-flex border-bottom align-items-center">
+                                        <div class="proofing-file-col d-flex align-items-center px-3 py-2 border-end"
+                                             style="min-width: 400px; flex: 0 0 400px;">
+                                            <div class="border-start ps-3 d-flex align-items-center flex-grow-1 overflow-hidden"
+                                                 style="margin-left: 75px; border-color: var(--o-border-color) !important;">
+                                                <span class="badge bg-outline-secondary me-2" style="flex-shrink: 0;">
+                                                    v<t t-esc="version.number"/>
+                                                </span>
+                                                <span class="text-muted small text-truncate me-auto" style="min-width: 0;">
+                                                    <t t-esc="version.filename"/>
+                                                </span>
+                                                <a t-att-href="version.download_url" download=""
+                                                   class="btn btn-link btn-sm p-1 ms-2"
+                                                   style="color: var(--o-main-text-color); opacity: 0.6;"
+                                                   t-att-title="T.downloadThisVersion">
+                                                    <i class="fa fa-download"/>
+                                                </a>
+                                                <div class="dropdown">
+                                                    <button class="btn btn-link btn-sm p-1"
+                                                            data-bs-toggle="dropdown"
+                                                            style="color: var(--o-main-text-color); opacity: 0.6;"
+                                                            t-on-click.stop="() => {}">
+                                                        <i class="fa fa-ellipsis-v"/>
+                                                    </button>
+                                                    <ul class="dropdown-menu dropdown-menu-end proofing-dropdown">
+                                                        <li>
+                                                            <a class="dropdown-item" href="#"
+                                                               t-on-click.prevent.stop="() => this.onShowVersionInfo(version)">
+                                                                <i class="fa fa-info-circle me-2"/><t t-esc="T.moreInfo"/>
+                                                            </a>
+                                                        </li>
+                                                        <li><hr class="dropdown-divider"/></li>
+                                                        <li>
+                                                            <a class="dropdown-item"
+                                                               t-att-href="version.download_url" download="">
+                                                                <i class="fa fa-download me-2"/>
+                                                                <t t-esc="T.downloadVersion"/> <t t-esc="version.number"/>
+                                                            </a>
+                                                        </li>
+                                                        <li><hr class="dropdown-divider"/></li>
+                                                        <li>
+                                                            <a class="dropdown-item text-danger" href="#"
+                                                               t-on-click.prevent.stop="() => this.onDeleteSpecificVersion(version)">
+                                                                <i class="fa fa-trash me-2"/>
+                                                                <t t-esc="T.deleteVersion"/> <t t-esc="version.number"/>
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <t t-foreach="state.steps" t-as="step" t-key="step.id">
+                                            <t t-set="vReview" t-value="version.reviews and version.reviews[step.id]"/>
+                                            <div class="proofing-step-col px-3 py-2 border-end d-flex align-items-center justify-content-center small"
+                                                 style="min-width: 200px; flex: 1;"
+                                                 t-att-class="vReview and vReview.has_comments ? 'cursor-pointer' : 'text-muted'"
+                                                 t-on-click.stop="() => vReview and vReview.has_comments and this.onVersionStepClick(file, version, step)">
+                                                <t t-if="vReview and vReview.has_comments">
+                                                    <i class="fa fa-comments me-1" style="color: #8b5cf6;"/>
+                                                    <span style="color: #8b5cf6;">
+                                                        <t t-esc="vReview.comment_summary"/>
+                                                    </span>
+                                                </t>
+                                                <t t-else="">
+                                                    <t t-esc="T.reviewNotStarted"/>
+                                                </t>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </t>
+                            </t>
+                        </t>
+                    </t>
+                </div>
+
+                <!-- Upload Dialog -->
+                <div t-if="state.showUploadDialog" class="proofing-info-overlay" t-on-click="onCloseUploadDialog">
+                    <div class="proofing-upload-dialog border rounded shadow-lg p-4"
+                         t-on-click.stop="() => {}">
+                        <!-- Drop zone -->
+                        <div t-att-class="'proofing-drop-zone mb-3 ' + (state.isDragOver ? 'drag-over' : '')"
+                             t-on-click="onBrowseFiles"
+                             t-on-dragover="onDropZoneDragOver"
+                             t-on-dragleave="onDropZoneDragLeave"
+                             t-on-drop="onDropZoneDrop">
+                            <i class="fa fa-cloud-upload fa-2x mb-2 d-block"/>
+                            <span><t t-esc="T.browseOrDrop"/></span>
+                        </div>
+                        <input type="file" multiple="" t-ref="uploadFileInput"
+                               t-on-change="onFilesSelected" style="display: none;"/>
+
+                        <!-- Footer with file count + buttons -->
+                        <div class="d-flex align-items-center mt-3">
+                            <t t-if="state.pendingFiles.length > 0">
+                                <div class="d-flex align-items-center text-primary">
+                                    <i class="fa fa-file-o me-2"/>
+                                    <strong><t t-esc="state.pendingFiles.length"/> <t t-esc="T.filesAdded"/></strong>
+                                </div>
+                            </t>
+                            <div class="ms-auto d-flex align-items-center gap-2">
+                                <button class="btn btn-link text-muted" t-on-click="onCloseUploadDialog">
+                                    <t t-esc="T.cancel"/>
+                                </button>
+                                <button t-att-class="'btn btn-primary ' + (state.pendingFiles.length === 0 || state.uploading ? 'disabled' : '')"
+                                        t-on-click="onUploadAndStart"
+                                        t-att-disabled="state.pendingFiles.length === 0 || state.uploading">
+                                    <i t-if="state.uploading" class="fa fa-spinner fa-spin me-1"/>
+                                    <t t-esc="T.uploadAndStart"/>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- File Info Modal -->
+                <div t-if="state.showInfoFile" class="proofing-info-overlay" t-on-click="onCloseInfo">
+                    <div class="proofing-info-popup border rounded shadow-lg p-4"
+                         t-on-click.stop="() => {}">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="mb-0"><t t-esc="T.fileInfo"/></h5>
+                            <button class="btn-close" t-on-click="onCloseInfo"/>
+                        </div>
+                        <table class="table table-sm mb-0">
+                            <tr>
+                                <td class="text-muted fw-bold" style="width: 150px;"><t t-esc="T.version"/></td>
+                                <td><t t-esc="state.showInfoFile.version"/></td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted fw-bold"><t t-esc="T.originalFileName"/></td>
+                                <td><t t-esc="state.showInfoFile.original_filename"/></td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted fw-bold"><t t-esc="T.fileType"/></td>
+                                <td><t t-esc="state.showInfoFile.mimetype"/></td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted fw-bold"><t t-esc="T.uploadedBy"/></td>
+                                <td><t t-esc="state.showInfoFile.uploaded_by"/></td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted fw-bold"><t t-esc="T.uploadedOn"/></td>
+                                <td><t t-esc="state.showInfoFile.upload_date"/></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

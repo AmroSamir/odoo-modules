@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Kanban View -->
+    <record id="proofing_project_view_kanban" model="ir.ui.view">
+        <field name="name">proofing.project.kanban</field>
+        <field name="model">proofing.project</field>
+        <field name="arch" type="xml">
+            <kanban action="action_open_dashboard" type="object">
+                <templates>
+                    <t t-name="card">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <strong><field name="name"/></strong>
+                            <button name="action_open_settings" type="object"
+                                    class="btn btn-link btn-sm p-0 text-muted"
+                                    title="Project settings">
+                                <i class="fa fa-gear"/>
+                            </button>
+                        </div>
+                        <field name="owner_id" widget="many2one_avatar_user"/>
+                        <div><field name="file_count"/> files</div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Tree View -->
+    <record id="proofing_project_view_tree" model="ir.ui.view">
+        <field name="name">proofing.project.tree</field>
+        <field name="model">proofing.project</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="owner_id" widget="many2one_avatar_user"/>
+                <field name="file_count"/>
+                <field name="step_count"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="proofing_project_view_form" model="ir.ui.view">
+        <field name="name">proofing.project.form</field>
+        <field name="model">proofing.project</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_open_dashboard" string="Open Dashboard"
+                            type="object" class="btn-primary"
+                            invisible="not id"/>
+                    <button name="action_upload_file" string="Upload File"
+                            type="object"
+                            invisible="not id"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Project Name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="owner_id" widget="many2one_avatar_user"/>
+                        </group>
+                        <group>
+                            <field name="file_count"/>
+                        </group>
+                    </group>
+
+                    <!-- Review Steps with Reviewers -->
+                    <notebook>
+                        <page string="Review Steps" name="steps">
+                            <field name="step_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="reviewer_ids" widget="many2many_tags"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Files" name="files">
+                            <field name="file_ids">
+                                <list>
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="current_version_number" string="Version"/>
+                                    <field name="file_type" widget="badge"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Campaign field on project form -->
+    <record id="proofing_project_view_form_campaign" model="ir.ui.view">
+        <field name="name">proofing.project.form.campaign</field>
+        <field name="model">proofing.project</field>
+        <field name="inherit_id" ref="creative_studio.proofing_project_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='owner_id']" position="after">
+                <field name="campaign_id"
+                       options="{'no_quick_create': True, 'create_name_field': 'title'}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="proofing_project_view_search" model="ir.ui.view">
+        <field name="name">proofing.project.search</field>
+        <field name="model">proofing.project</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="owner_id"/>
+                <filter name="my_projects" string="My Projects"
+                        domain="[('owner_id', '=', uid)]"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="proofing_project_action" model="ir.actions.act_window">
+        <field name="name">Projects</field>
+        <field name="res_model">proofing.project</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="proofing_project_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first creative studio project
+            </p>
+            <p>
+                Organize files, collect feedback, and manage approvals.
+            </p>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,752 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="creative_studio.ReviewPage">
+        <div class="proofing-review-page o_action d-flex flex-column h-100">
+            <!-- Loading -->
+            <div t-if="state.loading" class="d-flex justify-content-center align-items-center py-5">
+                <div class="spinner-border text-primary" role="status"/>
+            </div>
+
+            <t t-if="!state.loading and state.currentFile">
+                <!-- Top Bar -->
+                <div class="proofing-review-topbar d-flex align-items-center px-3 py-2 border-bottom bg-view position-relative">
+                    <button class="btn btn-link text-dark p-0 me-3" t-on-click="onBackToDashboard">
+                        <i class="fa fa-arrow-left"/>
+                    </button>
+                    <strong class="me-2 text-truncate" style="max-width: 300px;">
+                        <t t-esc="state.currentFile.name"/>
+                    </strong>
+                    <span class="badge bg-secondary me-2">
+                        v<t t-esc="state.currentVersion.version_number"/>
+                    </span>
+                    <t t-if="state.currentStep">
+                        <span class="proofing-step-badge me-3">
+                            <t t-esc="state.currentStep.name"/>
+                        </span>
+                    </t>
+
+                    <!-- Center: Decision Dropdown -->
+                    <div class="position-absolute start-50 translate-middle-x d-flex align-items-center gap-2" style="z-index: 1;">
+                        <t t-if="state.myDecision">
+                            <div class="dropdown">
+                                <button class="proofing-decision-dropdown-btn" data-bs-toggle="dropdown">
+                                    <t t-if="state.myDecision.decision === 'pending' or state.myDecision.decision === 'in_review'">
+                                        <i class="fa fa-eye me-1" style="color: #3b82f6;"/>
+                                        <span style="color: #3b82f6;"><t t-esc="T.inReview"/></span>
+                                        <i class="fa fa-caret-down ms-1"/>
+                                    </t>
+                                    <t t-if="state.myDecision.decision === 'approved'">
+                                        <i class="fa fa-check me-1" style="color: #22c55e;"/>
+                                        <span style="color: #22c55e;"><t t-esc="T.approved"/></span>
+                                        <i class="fa fa-caret-down ms-1"/>
+                                    </t>
+                                    <t t-if="state.myDecision.decision === 'changes_requested'">
+                                        <i class="fa fa-exclamation-triangle me-1" style="color: #f97316;"/>
+                                        <span style="color: #f97316;"><t t-esc="T.changesRequested"/></span>
+                                        <i class="fa fa-caret-down ms-1"/>
+                                    </t>
+                                    <t t-if="state.myDecision.decision === 'refused'">
+                                        <i class="fa fa-times me-1" style="color: #ef4444;"/>
+                                        <span style="color: #ef4444;"><t t-esc="T.refused"/></span>
+                                        <i class="fa fa-caret-down ms-1"/>
+                                    </t>
+                                </button>
+                                <ul class="dropdown-menu proofing-dropdown">
+                                    <li>
+                                        <a class="dropdown-item d-flex align-items-center" href="#"
+                                           t-on-click.prevent="onSetInReview">
+                                            <i class="fa fa-eye me-2" style="color: #3b82f6;"/>
+                                            <t t-esc="T.inReview"/>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item d-flex align-items-center" href="#"
+                                           t-on-click.prevent="onApprove">
+                                            <i class="fa fa-check me-2" style="color: #22c55e;"/>
+                                            <t t-esc="T.approve"/>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item d-flex align-items-center" href="#"
+                                           t-on-click.prevent="onRequestChanges">
+                                            <i class="fa fa-exclamation-triangle me-2" style="color: #f97316;"/>
+                                            <t t-esc="T.requestChanges"/>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item d-flex align-items-center" href="#"
+                                           t-on-click.prevent="onRefuse">
+                                            <i class="fa fa-times me-2" style="color: #ef4444;"/>
+                                            <t t-esc="T.refuse"/>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </t>
+                    </div>
+
+                    <div class="ms-auto d-flex align-items-center gap-2">
+                        <t t-foreach="state.fileReviews" t-as="fr" t-key="fr.step_id">
+                            <span t-att-class="'proofing-review-badge' + (state.currentStep and state.currentStep.id === fr.step_id ? ' proofing-review-badge-active' : '')">
+                                <t t-esc="fr.step_name"/>: <t t-esc="fr.decision_summary"/>
+                            </span>
+                        </t>
+                    </div>
+                </div>
+
+                <!-- Main Content Area -->
+                <div class="d-flex flex-grow-1 overflow-hidden">
+                    <!-- Left Sidebar -->
+                    <div t-if="state.sidebarOpen"
+                         class="proofing-sidebar border-end bg-view overflow-auto"
+                         style="width: 160px; min-width: 160px;">
+                        <div class="d-flex align-items-center justify-content-between px-3 py-2 border-bottom">
+                            <strong class="small"><t t-esc="T.allFiles"/></strong>
+                            <button class="btn btn-link btn-sm p-0" t-on-click="toggleSidebar">
+                                <i class="fa fa-chevron-left"/>
+                            </button>
+                        </div>
+                        <t t-foreach="state.files" t-as="file" t-key="file.id">
+                            <div t-att-class="'proofing-sidebar-file p-2 border-bottom cursor-pointer ' + (isActiveFile(file) ? 'bg-primary bg-opacity-10 border-start border-primary border-3' : '')"
+                                 t-on-click="() => this.selectFile(file)" style="cursor: pointer;">
+                                <div class="d-flex align-items-center justify-content-center proofing-thumb rounded mb-1"
+                                     style="height: 80px; overflow: hidden;">
+                                    <t t-if="file.thumbnail_url">
+                                        <img t-att-src="file.thumbnail_url" style="width: 100%; height: 100%; object-fit: contain;"/>
+                                    </t>
+                                    <t t-else="">
+                                        <i t-att-class="'fa ' + getFileIcon(file.file_type) + ' fa-2x text-white'"/>
+                                    </t>
+                                </div>
+                                <div class="small text-truncate" t-att-title="file.name"><t t-esc="file.name"/></div>
+                            </div>
+                        </t>
+                    </div>
+                    <div t-if="!state.sidebarOpen" class="border-end">
+                        <button class="btn btn-link p-2" t-on-click="toggleSidebar"><i class="fa fa-chevron-right"/></button>
+                    </div>
+
+                    <!-- Center: File Preview -->
+                    <div class="proofing-preview flex-grow-1 d-flex flex-column overflow-hidden">
+                        <div class="flex-grow-1 d-flex align-items-center justify-content-center position-relative overflow-auto proofing-canvas-viewport">
+                            <!-- VIDEO -->
+                            <t t-if="isVideo">
+                                <div class="w-100 h-100 d-flex flex-column">
+                                    <video t-ref="videoPlayer" controls=""
+                                           class="flex-grow-1 w-100" style="max-height: calc(100% - 28px); object-fit: contain;">
+                                        <source t-att-src="contentUrl" type="video/mp4"/>
+                                    </video>
+                                    <div class="proofing-video-timeline position-relative"
+                                         t-if="timestampAnnotations.length > 0">
+                                        <div class="proofing-timeline-bar"/>
+                                        <t t-foreach="timestampAnnotations" t-as="ann" t-key="ann.id">
+                                            <div class="proofing-timeline-marker"
+                                                 t-att-style="'left: ' + getTimelinePosition(ann.timestamp_seconds)"
+                                                 t-att-class="state.highlightedAnnotation === ann.id ? 'highlighted' : ''"
+                                                 t-on-click="() => this.onTimelineMarkerClick(ann)"
+                                                 t-att-title="formatTimestamp(ann.timestamp_seconds)">
+                                                <span class="proofing-timeline-marker-num"><t t-esc="ann.number"/></span>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </div>
+                            </t>
+                            <!-- IMAGE -->
+                            <t t-if="isImage">
+                                <div t-ref="imageContainer"
+                                     class="proofing-image-container position-relative d-inline-block"
+                                     t-att-class="(state.drawingTool ? 'drawing-mode' : '') + (state.pinMode ? ' pin-mode' : '')"
+                                     t-att-style="imageContainerStyle"
+                                     t-on-click="onImageClick"
+                                     t-on-mousemove="onCanvasMouseMove"
+                                     t-on-mouseleave="onCanvasMouseLeave">
+                                    <img t-ref="imagePreview" t-att-src="contentUrl"
+                                         class="proofing-annotatable-image"
+                                         style="width: 100%; display: block; pointer-events: none; user-select: none;"
+                                         draggable="false"/>
+
+                                    <!-- SVG Drawing Overlay -->
+                                    <svg t-ref="svgOverlay"
+                                         class="proofing-svg-overlay"
+                                         viewBox="0 0 100 100"
+                                         preserveAspectRatio="none"
+                                         t-att-style="'pointer-events: ' + (state.drawingTool ? 'all' : 'none')"
+                                         t-on-mousedown="onSvgMouseDown">
+                                        <!-- Arrow marker defs -->
+                                        <defs>
+                                            <t t-foreach="drawingColors" t-as="c" t-key="c.value">
+                                                <marker t-att-id="'arrow-' + c.value.replace('#', '')"
+                                                        markerWidth="10" markerHeight="7"
+                                                        refX="9" refY="3.5" orient="auto">
+                                                    <polygon points="0 0, 10 3.5, 0 7" t-att-fill="c.value"/>
+                                                </marker>
+                                            </t>
+                                        </defs>
+
+                                        <!-- Saved annotation drawings -->
+                                        <t t-if="!state.hideMarkers">
+                                            <t t-foreach="savedDrawingShapes" t-as="shape" t-key="shape.key">
+                                                <polyline t-if="shape.type === 'freehand'"
+                                                          t-att-points="shape.pointsStr"
+                                                          fill="none"
+                                                          t-att-stroke="shape.color"
+                                                          stroke-width="0.5"
+                                                          stroke-linecap="round"
+                                                          stroke-linejoin="round"
+                                                          t-att-class="shape.isHighlighted ? 'proofing-shape-highlighted' : ''"
+                                                          style="pointer-events: visibleStroke; cursor: pointer;"/>
+                                                <rect t-if="shape.type === 'rect'"
+                                                      t-att-x="shape.x" t-att-y="shape.y"
+                                                      t-att-width="shape.w" t-att-height="shape.h"
+                                                      fill="none"
+                                                      t-att-stroke="shape.color"
+                                                      stroke-width="0.5"
+                                                      stroke-linejoin="round"
+                                                      t-att-class="shape.isHighlighted ? 'proofing-shape-highlighted' : ''"
+                                                      style="pointer-events: visibleStroke; cursor: pointer;"/>
+                                                <line t-if="shape.type === 'arrow'"
+                                                      t-att-x1="shape.x1" t-att-y1="shape.y1"
+                                                      t-att-x2="shape.x2" t-att-y2="shape.y2"
+                                                      t-att-stroke="shape.color"
+                                                      stroke-width="0.5"
+                                                      t-att-marker-end="shape.markerEnd"
+                                                      t-att-class="shape.isHighlighted ? 'proofing-shape-highlighted' : ''"
+                                                      style="pointer-events: visibleStroke; cursor: pointer;"/>
+                                                <line t-if="shape.type === 'line'"
+                                                      t-att-x1="shape.x1" t-att-y1="shape.y1"
+                                                      t-att-x2="shape.x2" t-att-y2="shape.y2"
+                                                      t-att-stroke="shape.color"
+                                                      stroke-width="0.5"
+                                                      stroke-linecap="round"
+                                                      t-att-class="shape.isHighlighted ? 'proofing-shape-highlighted' : ''"
+                                                      style="pointer-events: visibleStroke; cursor: pointer;"/>
+                                            </t>
+                                        </t>
+
+                                        <!-- Pending drawings (current editor session) -->
+                                        <t t-foreach="pendingDrawingShapes" t-as="shape" t-key="shape.key">
+                                            <polyline t-if="shape.type === 'freehand'"
+                                                      t-att-points="shape.pointsStr"
+                                                      fill="none"
+                                                      t-att-stroke="shape.color"
+                                                      stroke-width="0.5"
+                                                      stroke-linecap="round"
+                                                      stroke-linejoin="round"
+                                                      opacity="0.9"/>
+                                            <rect t-if="shape.type === 'rect'"
+                                                  t-att-x="shape.x" t-att-y="shape.y"
+                                                  t-att-width="shape.w" t-att-height="shape.h"
+                                                  fill="none"
+                                                  t-att-stroke="shape.color"
+                                                  stroke-width="0.5"
+                                                  stroke-linejoin="round"
+                                                  opacity="0.9"/>
+                                            <line t-if="shape.type === 'arrow'"
+                                                  t-att-x1="shape.x1" t-att-y1="shape.y1"
+                                                  t-att-x2="shape.x2" t-att-y2="shape.y2"
+                                                  t-att-stroke="shape.color"
+                                                  stroke-width="0.5"
+                                                  t-att-marker-end="shape.markerEnd"
+                                                  opacity="0.9"/>
+                                            <line t-if="shape.type === 'line'"
+                                                  t-att-x1="shape.x1" t-att-y1="shape.y1"
+                                                  t-att-x2="shape.x2" t-att-y2="shape.y2"
+                                                  t-att-stroke="shape.color"
+                                                  stroke-width="0.5"
+                                                  stroke-linecap="round"
+                                                  opacity="0.9"/>
+                                        </t>
+
+                                        <!-- Active shape being drawn right now -->
+                                        <t t-if="activeShapeData">
+                                            <polyline t-if="activeShapeData.type === 'freehand'"
+                                                      t-att-points="activeShapeData.pointsStr"
+                                                      fill="none"
+                                                      t-att-stroke="activeShapeData.color"
+                                                      stroke-width="0.5"
+                                                      stroke-linecap="round"
+                                                      stroke-linejoin="round"
+                                                      opacity="0.7"
+                                                      stroke-dasharray="1,0.5"/>
+                                            <rect t-if="activeShapeData.type === 'rect'"
+                                                  t-att-x="activeShapeData.x" t-att-y="activeShapeData.y"
+                                                  t-att-width="activeShapeData.w" t-att-height="activeShapeData.h"
+                                                  fill="none"
+                                                  t-att-stroke="activeShapeData.color"
+                                                  stroke-width="0.5"
+                                                  stroke-dasharray="1,0.5"
+                                                  opacity="0.7"/>
+                                            <line t-if="activeShapeData.type === 'arrow'"
+                                                  t-att-x1="activeShapeData.x1" t-att-y1="activeShapeData.y1"
+                                                  t-att-x2="activeShapeData.x2" t-att-y2="activeShapeData.y2"
+                                                  t-att-stroke="activeShapeData.color"
+                                                  stroke-width="0.5"
+                                                  t-att-marker-end="activeShapeData.markerEnd"
+                                                  stroke-dasharray="1,0.5"
+                                                  opacity="0.7"/>
+                                            <line t-if="activeShapeData.type === 'line'"
+                                                  t-att-x1="activeShapeData.x1" t-att-y1="activeShapeData.y1"
+                                                  t-att-x2="activeShapeData.x2" t-att-y2="activeShapeData.y2"
+                                                  t-att-stroke="activeShapeData.color"
+                                                  stroke-width="0.5"
+                                                  stroke-linecap="round"
+                                                  stroke-dasharray="1,0.5"
+                                                  opacity="0.7"/>
+                                        </t>
+                                    </svg>
+
+                                    <!-- Pin markers -->
+                                    <t t-if="!state.hideMarkers">
+                                        <t t-foreach="pointAnnotations" t-as="ann" t-key="ann.id">
+                                            <div class="proofing-pin-marker"
+                                                 t-att-style="'left: ' + ann.x_percent + '%; top: ' + ann.y_percent + '%;'"
+                                                 t-att-class="state.highlightedAnnotation === ann.id ? 'highlighted' : ''"
+                                                 t-on-click.stop="() => this.onMarkerClick(ann)">
+                                                <t t-esc="ann.number"/>
+                                            </div>
+                                        </t>
+                                    </t>
+
+                                    <!-- Pending pin -->
+                                    <div t-if="state.pendingPin and !state.hideMarkers" class="proofing-pin-marker pending"
+                                         t-att-style="'left: ' + state.pendingPin.x_percent + '%; top: ' + state.pendingPin.y_percent + '%;'">
+                                        <i class="fa fa-plus" style="font-size: 10px;"/>
+                                    </div>
+
+                                    <!-- Green hover cursor -->
+                                    <div t-if="state.hoverCursorVisible and !state.hideMarkers"
+                                         t-ref="hoverCursor"
+                                         class="proofing-hover-cursor"
+                                         t-att-style="'left: ' + state.hoverCursorX + '%; top: ' + state.hoverCursorY + '%;'">
+                                        <span class="proofing-hover-cursor-icon">+</span>
+                                        <span class="proofing-hover-cursor-label"><t t-esc="T.clickToLeaveComment"/></span>
+                                    </div>
+                                </div>
+                            </t>
+                            <!-- PDF -->
+                            <t t-if="isPdf">
+                                <iframe t-att-src="contentUrl" class="w-100 h-100" style="border: none;"/>
+                            </t>
+                            <!-- Fallback -->
+                            <t t-if="!isVideo and !isImage and !isPdf">
+                                <div class="text-white text-center">
+                                    <i class="fa fa-file-o fa-4x mb-3 d-block"/>
+                                    <div><t t-esc="T.previewNotAvailable"/></div>
+                                    <a t-att-href="contentUrl" class="btn btn-outline-light mt-2" download="">
+                                        <i class="fa fa-download me-1"/> <t t-esc="T.download"/>
+                                    </a>
+                                </div>
+                            </t>
+                        </div>
+
+                        <!-- Bottom Bar: Canvas Controls -->
+                        <div class="proofing-canvas-controls d-flex align-items-center px-3 border-top">
+                            <!-- Rotation -->
+                            <button class="btn btn-sm btn-link proofing-control-btn" t-on-click="onRotateLeft" title="Rotate left">
+                                <i class="fa fa-undo"/>
+                            </button>
+                            <button class="btn btn-sm btn-link proofing-control-btn" t-on-click="onRotateRight" title="Rotate right">
+                                <i class="fa fa-repeat"/>
+                            </button>
+
+                            <div class="proofing-control-divider"/>
+
+                            <!-- Zoom -->
+                            <button class="btn btn-sm btn-link proofing-control-btn" t-on-click="onZoomOut" title="Zoom out">
+                                <i class="fa fa-minus"/>
+                            </button>
+                            <div class="position-relative">
+                                <button class="btn btn-sm btn-link proofing-control-btn proofing-zoom-btn" t-on-click="toggleZoomDropdown">
+                                    <t t-esc="state.zoomLevel"/>%
+                                </button>
+                                <div t-if="state.zoomDropdownOpen" class="proofing-zoom-dropdown">
+                                    <t t-foreach="zoomLevels" t-as="level" t-key="level">
+                                        <div t-att-class="'proofing-zoom-option ' + (state.zoomLevel === level ? 'active' : '')"
+                                             t-on-click="() => this.setZoomLevel(level)">
+                                            <t t-esc="level"/>%
+                                        </div>
+                                    </t>
+                                </div>
+                            </div>
+                            <button class="btn btn-sm btn-link proofing-control-btn" t-on-click="onZoomIn" title="Zoom in">
+                                <i class="fa fa-plus"/>
+                            </button>
+
+                            <div class="proofing-control-divider"/>
+
+                            <!-- View / Measure -->
+                            <div class="proofing-mode-toggle">
+                                <button t-att-class="'proofing-mode-btn ' + (state.viewMode === 'view' ? 'active' : '')"
+                                        t-on-click="() => this.setViewMode('view')"><t t-esc="T.view"/></button>
+                                <button t-att-class="'proofing-mode-btn ' + (state.viewMode === 'measure' ? 'active' : '')"
+                                        t-on-click="() => this.setViewMode('measure')"><t t-esc="T.measure"/></button>
+                            </div>
+
+                            <div class="ms-auto d-flex align-items-center gap-1">
+                                <!-- Hide markers -->
+                                <div class="d-flex align-items-center gap-1">
+                                    <span class="proofing-control-label"><t t-esc="T.hideMarkers"/></span>
+                                    <button t-att-class="'proofing-toggle-btn ' + (state.hideMarkers ? 'active' : '')"
+                                            t-on-click="toggleHideMarkers">
+                                        <span class="proofing-toggle-knob"/>
+                                    </button>
+                                </div>
+
+                                <!-- Download -->
+                                <a t-att-href="contentUrl" download="" class="btn btn-sm btn-link proofing-control-btn" title="Download original file">
+                                    <i class="fa fa-download"/>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Panel: Comments -->
+                    <div class="proofing-comments border-start d-flex flex-column"
+                         style="width: 320px; min-width: 320px;">
+                        <!-- Header with comment counter -->
+                        <div class="d-flex align-items-center justify-content-between px-3 py-2 border-bottom">
+                            <div>
+                                <strong><t t-esc="T.comments"/></strong>
+                                <span class="proofing-comment-counter ms-2">
+                                    <t t-esc="state.annotationCounts.resolved"/>/<t t-esc="state.annotationCounts.total"/>
+                                </span>
+                            </div>
+                            <button class="btn btn-link btn-sm p-0 text-muted" t-on-click="toggleShowResolved">
+                                <i t-att-class="'fa ' + (state.showResolved ? 'fa-eye-slash' : 'fa-eye') + ' me-1'"/>
+                                <t t-if="state.showResolved"><t t-esc="T.hideResolved"/></t>
+                                <t t-else=""><t t-esc="T.showResolved"/></t>
+                            </button>
+                        </div>
+
+                        <!-- Pending pin banner -->
+                        <div t-if="state.pendingPin" class="px-3 py-2 border-bottom" style="background: rgba(34, 197, 94, 0.1);">
+                            <div class="d-flex align-items-center justify-content-between mb-1">
+                                <small class="fw-bold" style="color: #22C55E;"><i class="fa fa-map-pin me-1"/> <t t-esc="T.pinPlaced"/></small>
+                                <button class="btn btn-link btn-sm p-0 text-danger" t-on-click="cancelPin"><i class="fa fa-times"/></button>
+                            </div>
+                            <small class="text-muted"><t t-esc="T.typeCommentBelow"/></small>
+                        </div>
+
+                        <!-- Comment list -->
+                        <div class="flex-grow-1 overflow-auto px-3 py-2">
+                            <t t-if="filteredAnnotations.length === 0">
+                                <div class="text-center text-muted py-5">
+                                    <i class="fa fa-comments-o fa-3x mb-3 d-block"/>
+                                    <div class="fw-bold"><t t-esc="T.noCommentsYet"/></div>
+                                    <div class="small mt-1"><t t-esc="T.clickToComment"/></div>
+                                </div>
+                            </t>
+                            <t t-foreach="filteredAnnotations" t-as="ann" t-key="ann.id">
+                                <div t-att-id="'ann-' + ann.id"
+                                     t-att-class="'proofing-comment mb-2 rounded overflow-hidden ' + (state.highlightedAnnotation === ann.id ? 'highlighted' : '') + (ann.is_resolved ? ' resolved' : '')"
+                                     t-on-click="() => this.onAnnotationClick(ann)">
+                                    <!-- Header -->
+                                    <div class="d-flex align-items-center p-2 pb-0">
+                                        <t t-if="ann.annotation_type === 'point'">
+                                            <span class="proofing-comment-pin-badge me-2"><t t-esc="ann.number"/></span>
+                                        </t>
+                                        <t t-if="ann.annotation_type === 'timestamp'">
+                                            <span class="proofing-comment-time-badge me-2 cursor-pointer"
+                                                  t-on-click.stop="() => this.seekToTimestamp(ann.timestamp_seconds)">
+                                                <i class="fa fa-play-circle me-1"/>
+                                                <t t-esc="formatTimestamp(ann.timestamp_seconds)"/>
+                                            </span>
+                                        </t>
+                                        <img t-att-src="ann.author_avatar" class="rounded-circle me-2" width="24" height="24" style="object-fit: cover;"/>
+                                        <strong class="small flex-grow-1"><t t-esc="ann.author_name"/></strong>
+                                        <t t-if="ann.visibility === 'team_only'">
+                                            <i class="fa fa-lock text-muted me-1" title="Team only"/>
+                                        </t>
+                                        <small class="text-muted"><t t-esc="formatDate(ann.create_date)"/></small>
+                                    </div>
+
+                                    <!-- Body -->
+                                    <div class="px-2 py-1 small proofing-comment-body" t-out="ann.body"/>
+
+                                    <!-- Drawing indicator -->
+                                    <t t-if="ann.drawing_data and ann.drawing_data.length > 0">
+                                        <div class="px-2 pb-1">
+                                            <span class="proofing-drawing-badge">
+                                                <i class="fa fa-pencil me-1"/><t t-esc="ann.drawing_data.length"/> <t t-esc="T.drawings"/>
+                                            </span>
+                                        </div>
+                                    </t>
+
+                                    <!-- Voice attachments -->
+                                    <t t-foreach="ann.attachments" t-as="att" t-key="att.id">
+                                        <t t-if="att.is_voice">
+                                            <div class="px-2 pb-1">
+                                                <audio controls="" preload="metadata" class="proofing-voice-player">
+                                                    <source t-att-src="att.url"/>
+                                                </audio>
+                                            </div>
+                                        </t>
+                                    </t>
+
+                                    <!-- File attachments -->
+                                    <div t-if="ann.attachments.length > 0" class="px-2 pb-1 d-flex flex-wrap gap-1">
+                                        <t t-foreach="ann.attachments" t-as="att" t-key="att.id">
+                                            <t t-if="!att.is_voice">
+                                                <t t-if="att.is_image">
+                                                    <a t-att-href="att.url" target="_blank" class="proofing-attachment-thumb">
+                                                        <img t-att-src="att.url" t-att-title="att.name"/>
+                                                    </a>
+                                                </t>
+                                                <t t-if="!att.is_image">
+                                                    <a t-att-href="att.url" target="_blank" class="proofing-attachment-chip" t-att-title="att.name">
+                                                        <i t-att-class="'fa ' + getAttachmentIcon(att.mimetype) + ' me-1'"/>
+                                                        <span class="text-truncate"><t t-esc="att.name"/></span>
+                                                    </a>
+                                                </t>
+                                            </t>
+                                        </t>
+                                    </div>
+
+                                    <!-- Actions bar -->
+                                    <div class="d-flex align-items-center px-2 pb-2 gap-2">
+                                        <button class="btn btn-link btn-sm p-0 text-muted"
+                                                t-on-click.stop="() => this.toggleReplies(ann)">
+                                            <i class="fa fa-reply me-1"/>
+                                            <t t-if="ann.reply_count > 0">
+                                                <t t-esc="ann.reply_count"/>
+                                                <t t-if="ann.reply_count === 1"> <t t-esc="T.reply"/></t>
+                                                <t t-else=""> <t t-esc="T.replies"/></t>
+                                            </t>
+                                            <t t-else=""><t t-esc="T.reply"/></t>
+                                        </button>
+                                        <t t-if="!ann.is_resolved">
+                                            <button class="btn btn-link btn-sm p-0 text-muted"
+                                                    t-on-click.stop="() => this.onResolve(ann)">
+                                                <i class="fa fa-check-circle me-1"/> <t t-esc="T.resolve"/>
+                                            </button>
+                                        </t>
+                                        <t t-else="">
+                                            <span class="badge bg-success small me-1"><t t-esc="T.resolved"/></span>
+                                            <button class="btn btn-link btn-sm p-0 text-muted"
+                                                    t-on-click.stop="() => this.onReopen(ann)"><t t-esc="T.reopen"/></button>
+                                        </t>
+                                    </div>
+
+                                    <!-- Replies thread -->
+                                    <t t-if="isExpanded(ann)">
+                                        <div class="proofing-replies border-top">
+                                            <t t-foreach="ann.replies" t-as="reply" t-key="reply.id">
+                                                <div class="proofing-reply d-flex px-3 py-2">
+                                                    <img t-att-src="reply.author_avatar" class="rounded-circle me-2 mt-1" width="20" height="20" style="object-fit: cover;"/>
+                                                    <div class="flex-grow-1">
+                                                        <div class="d-flex align-items-center">
+                                                            <strong class="small"><t t-esc="reply.author_name"/></strong>
+                                                            <small class="text-muted ms-2"><t t-esc="formatDate(reply.create_date)"/></small>
+                                                        </div>
+                                                        <div class="small" t-out="reply.body"/>
+                                                        <!-- Reply attachments -->
+                                                        <t t-foreach="reply.attachments" t-as="att" t-key="att.id">
+                                                            <t t-if="att.is_voice">
+                                                                <audio controls="" preload="metadata" class="proofing-voice-player mt-1">
+                                                                    <source t-att-src="att.url"/>
+                                                                </audio>
+                                                            </t>
+                                                            <t t-if="!att.is_voice and att.is_image">
+                                                                <a t-att-href="att.url" target="_blank" class="proofing-attachment-thumb mt-1">
+                                                                    <img t-att-src="att.url" t-att-title="att.name"/>
+                                                                </a>
+                                                            </t>
+                                                            <t t-if="!att.is_voice and !att.is_image">
+                                                                <a t-att-href="att.url" target="_blank" class="proofing-attachment-chip mt-1" t-att-title="att.name">
+                                                                    <i t-att-class="'fa ' + getAttachmentIcon(att.mimetype) + ' me-1'"/>
+                                                                    <t t-esc="att.name"/>
+                                                                </a>
+                                                            </t>
+                                                        </t>
+                                                    </div>
+                                                </div>
+                                            </t>
+                                            <div class="px-3 py-2 d-flex gap-2">
+                                                <input type="text" class="form-control form-control-sm"
+                                                       t-att-placeholder="T.replyPlaceholder"
+                                                       t-att-value="getReplyText(ann)"
+                                                       t-on-input="(ev) => this.setReplyText(ann, ev)"
+                                                       t-on-keydown="(ev) => this.onReplyKeydown(ann, ev)"/>
+                                                <button class="btn btn-primary btn-sm"
+                                                        t-on-click.stop="() => this.onAddReply(ann)">
+                                                    <i class="fa fa-paper-plane"/>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </div>
+                            </t>
+                        </div>
+
+                        <!-- New comment input area -->
+                        <div class="border-top p-3">
+                            <!-- Drawing Tool & Color Bar (only shown after pin placement) -->
+                            <t t-if="isImage and isEditorActive">
+                                <div class="proofing-tool-bar mb-2">
+                                    <div class="d-flex align-items-center gap-1">
+                                        <!-- Color picker -->
+                                        <div class="position-relative">
+                                            <button class="proofing-color-btn" t-on-click="toggleColorPicker" title="Color">
+                                                <span class="proofing-color-swatch" t-att-style="'background: ' + state.drawingColor"/>
+                                            </button>
+                                            <div t-if="state.colorPickerOpen" class="proofing-color-dropdown">
+                                                <t t-foreach="drawingColors" t-as="c" t-key="c.value">
+                                                    <button t-att-class="'proofing-color-option ' + (state.drawingColor === c.value ? 'active' : '')"
+                                                            t-att-style="'background: ' + c.value"
+                                                            t-on-click="() => this.selectColor(c.value)"
+                                                            t-att-title="c.name"/>
+                                                </t>
+                                            </div>
+                                        </div>
+
+                                        <div class="proofing-tool-divider"/>
+
+                                        <!-- Drawing tools -->
+                                        <button t-att-class="'proofing-tool-btn ' + (state.drawingTool === 'freehand' ? 'active' : '')"
+                                                t-on-click="() => this.selectDrawingTool('freehand')" title="Freehand">
+                                            <svg width="16" height="16" viewBox="0 0 16 16"><path d="M2 12 C4 8, 6 4, 8 6 C10 8, 12 4, 14 2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                                        </button>
+                                        <button t-att-class="'proofing-tool-btn ' + (state.drawingTool === 'rect' ? 'active' : '')"
+                                                t-on-click="() => this.selectDrawingTool('rect')" title="Rectangle">
+                                            <i class="fa fa-square-o"/>
+                                        </button>
+                                        <button t-att-class="'proofing-tool-btn ' + (state.drawingTool === 'arrow' ? 'active' : '')"
+                                                t-on-click="() => this.selectDrawingTool('arrow')" title="Arrow">
+                                            <svg width="16" height="16" viewBox="0 0 16 16"><line x1="2" y1="14" x2="13" y2="3" stroke="currentColor" stroke-width="1.5"/><polyline points="8,2 14,2 14,8" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+                                        </button>
+                                        <button t-att-class="'proofing-tool-btn ' + (state.drawingTool === 'line' ? 'active' : '')"
+                                                t-on-click="() => this.selectDrawingTool('line')" title="Line">
+                                            <svg width="16" height="16" viewBox="0 0 16 16"><line x1="2" y1="14" x2="14" y2="2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                                        </button>
+
+                                        <!-- Undo -->
+                                        <div class="proofing-tool-divider"/>
+                                        <button class="proofing-tool-btn"
+                                                t-on-click="onUndoDrawing"
+                                                t-att-disabled="state.pendingDrawings.length === 0" title="Undo last drawing">
+                                            <i class="fa fa-undo"/>
+                                        </button>
+                                    </div>
+                                </div>
+                            </t>
+
+                            <!-- Voice recording UI -->
+                            <t t-if="state.isRecording">
+                                <div class="proofing-recording-bar mb-2 d-flex align-items-center gap-2 p-2 rounded">
+                                    <span class="proofing-recording-dot"/>
+                                    <span class="small fw-bold text-danger"><t t-esc="T.recording"/></span>
+                                    <span class="small ms-auto"><t t-esc="formatRecordingDuration()"/></span>
+                                    <button class="btn btn-sm btn-outline-danger" t-on-click="stopRecording">
+                                        <i class="fa fa-stop"/>
+                                    </button>
+                                </div>
+                            </t>
+                            <t t-if="state.hasVoiceMessage and !state.isRecording">
+                                <div class="proofing-voice-preview mb-2 d-flex align-items-center gap-2 p-2 rounded">
+                                    <i class="fa fa-microphone text-primary"/>
+                                    <audio controls="" preload="metadata" class="proofing-voice-player flex-grow-1">
+                                        <source t-att-src="getVoiceUrl()"/>
+                                    </audio>
+                                    <button class="btn btn-sm btn-outline-danger" t-on-click="deleteVoiceMessage">
+                                        <i class="fa fa-trash"/>
+                                    </button>
+                                </div>
+                            </t>
+
+                            <!-- Pending file attachments -->
+                            <t t-if="state.pendingAttachments.length > 0">
+                                <div class="mb-2 d-flex flex-wrap gap-1">
+                                    <t t-foreach="state.pendingAttachments" t-as="pf" t-key="pf_index">
+                                        <span class="proofing-attachment-chip">
+                                            <i class="fa fa-file-o me-1"/>
+                                            <span class="text-truncate" style="max-width: 120px;"><t t-esc="pf.name"/></span>
+                                            <button class="btn btn-link btn-sm p-0 ms-1 text-danger"
+                                                    t-on-click="() => this.removeAttachment(pf_index)">
+                                                <i class="fa fa-times"/>
+                                            </button>
+                                        </span>
+                                    </t>
+                                </div>
+                            </t>
+
+                            <!-- Textarea with @mention dropdown -->
+                            <div class="position-relative">
+                                <!-- Mention dropdown (above textarea) -->
+                                <div t-if="state.mentionActive and mentionSuggestions.length > 0"
+                                     class="proofing-mention-dropdown">
+                                    <t t-foreach="mentionSuggestions" t-as="user" t-key="user.id">
+                                        <div t-att-class="'proofing-mention-item ' + (mentionSuggestions.indexOf(user) === state.mentionIndex ? 'active' : '')"
+                                             t-on-click.stop="() => this.onMentionSelect(user)">
+                                            <img t-att-src="user.avatar_url" class="rounded-circle me-2" width="20" height="20" style="object-fit: cover;"/>
+                                            <span><t t-esc="user.name"/></span>
+                                        </div>
+                                    </t>
+                                </div>
+                                <textarea t-ref="commentTextarea"
+                                          class="form-control form-control-sm mb-2"
+                                          rows="2"
+                                          t-att-placeholder="T.writeComment"
+                                          t-att-value="state.newComment"
+                                          t-on-input="onCommentInput"
+                                          t-on-keydown="onCommentKeydown"/>
+                            </div>
+
+                            <!-- Action buttons row -->
+                            <div class="d-flex align-items-center gap-1">
+                                <t t-if="isImage">
+                                    <button t-att-class="'proofing-action-btn ' + (state.pinMode ? 'active' : '')"
+                                            t-on-click="togglePinMode" title="Place pin">
+                                        <i class="fa fa-crosshairs"/>
+                                    </button>
+                                </t>
+                                <button class="proofing-action-btn" t-on-click="onAttachFile" title="Attach file">
+                                    <i class="fa fa-paperclip"/>
+                                </button>
+                                <t t-if="!state.isRecording and !state.hasVoiceMessage">
+                                    <button class="proofing-action-btn" t-on-click="startRecording" title="Record voice">
+                                        <i class="fa fa-microphone"/>
+                                    </button>
+                                </t>
+
+                                <!-- Visibility menu -->
+                                <div class="position-relative">
+                                    <button class="proofing-action-btn" t-on-click="toggleVisibilityMenu" title="Visibility">
+                                        <i class="fa fa-ellipsis-h"/>
+                                    </button>
+                                    <div t-if="state.visibilityMenuOpen" class="proofing-visibility-dropdown">
+                                        <div t-att-class="'proofing-visibility-option ' + (state.commentVisibility === 'everyone' ? 'active' : '')"
+                                             t-on-click="() => this.setVisibility('everyone')">
+                                            <i class="fa fa-eye me-2"/> <t t-esc="T.everyone"/>
+                                        </div>
+                                        <div t-att-class="'proofing-visibility-option ' + (state.commentVisibility === 'team_only' ? 'active' : '')"
+                                             t-on-click="() => this.setVisibility('team_only')">
+                                            <i class="fa fa-lock me-2"/> <t t-esc="T.teamOnly"/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Delete/discard -->
+                                <button class="proofing-action-btn" t-on-click="onCancelAnnotation"
+                                        t-att-disabled="!state.pendingPin and state.pendingDrawings.length === 0"
+                                        title="Discard annotations">
+                                    <i class="fa fa-trash-o"/>
+                                </button>
+
+                                <!-- Send -->
+                                <button class="proofing-send-btn ms-auto"
+                                        t-on-click="onAddComment"
+                                        t-att-disabled="!state.newComment.trim() and !state.hasVoiceMessage and state.pendingAttachments.length === 0 and state.pendingDrawings.length === 0"
+                                        title="Save comment">
+                                    <i class="fa fa-paper-plane"/>
+                                </button>
+                            </div>
+                            <!-- Hidden file input -->
+                            <input type="file" multiple="" t-ref="fileInput" t-on-change="onFileSelected"
+                                   style="display: none;"/>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </div>
+    </t>
+</templates>

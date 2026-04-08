@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Client action that triggers the OWL component -->
+    <record id="action_ops_dashboard" model="ir.actions.client">
+        <field name="name">Ops Dashboard</field>
+        <field name="tag">ops_dashboard_action</field>
+    </record>
+
+    <!-- Top-level menu item with a dashboard icon -->
+    <menuitem
+        id="menu_ops_dashboard_root"
+        name="Ops Dashboard"
+        action="action_ops_dashboard"
+        web_icon="ops_dashboard,static/description/icon.png"
+        sequence="5"
+    />
+
+</odoo>

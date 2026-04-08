@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_users_form_creative_studio" model="ir.ui.view">
+        <field name="name">res.users.form.creative_studio</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='group_ids'][@widget='res_user_group_ids'][last()]" position="after">
+                <group col="2" colspan="2">
+                    <separator string="CREATIVE STUDIO" colspan="2"/>
+                    <field name="creative_studio_role" string="Creative Studio"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

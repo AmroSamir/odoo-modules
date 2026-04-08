@@ -1,0 +1,626 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* creative_studio
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-03-28 00:00+0000\n"
+"PO-Revision-Date: 2026-03-28 00:00+0000\n"
+"Last-Translator: \n"
+"Language-Team: Arabic\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ar\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+#. module: creative_studio
+#: model:ir.actions.act_window,name:creative_studio.proofing_project_action
+#: model:ir.ui.menu,name:creative_studio.proofing_menu_projects
+msgid "Projects"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.actions.act_window,name:creative_studio.proofing_file_action
+#: model:ir.ui.menu,name:creative_studio.proofing_menu_files
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_project__file_ids
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_upload_wizard__line_ids
+msgid "Files"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.actions.act_window,name:creative_studio.proofing_my_reviews_action
+#: model:ir.ui.menu,name:creative_studio.proofing_menu_my_reviews
+msgid "My Reviews"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.actions.act_window,name:creative_studio.proofing_annotation_action
+#: model:ir.ui.menu,name:creative_studio.proofing_menu_annotations
+msgid "Annotations"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.actions.act_window,name:creative_studio.proofing_version_action
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_file__version_ids
+msgid "Versions"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.actions.act_window,name:creative_studio.proofing_review_step_action
+#: model:ir.ui.menu,name:creative_studio.proofing_menu_config_steps
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_project__step_ids
+#: model_terms:ir.ui.view,arch_db:creative_studio.proofing_project_view_form
+msgid "Review Steps"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.ui.menu,name:creative_studio.proofing_menu_root
+msgid "Creative Studio"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.ui.menu,name:creative_studio.proofing_menu_config
+msgid "Configuration"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model,name:creative_studio.model_proofing_project
+msgid "Creative Studio Project"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model,name:creative_studio.model_proofing_file
+msgid "Creative Studio File"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model,name:creative_studio.model_proofing_version
+msgid "File Version"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model,name:creative_studio.model_proofing_review_step
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_file_review__step_id
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_annotation__step_id
+msgid "Review Step"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model,name:creative_studio.model_proofing_file_review
+msgid "File Review Status"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model,name:creative_studio.model_proofing_review_decision
+msgid "Review Decision"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model,name:creative_studio.model_proofing_annotation
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_annotation_reply__annotation_id
+msgid "Annotation"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model,name:creative_studio.model_proofing_annotation_reply
+msgid "Annotation Reply"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model,name:creative_studio.model_proofing_tag
+msgid "Tag"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model,name:creative_studio.model_proofing_upload_wizard
+msgid "Upload File Wizard"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model,name:creative_studio.model_proofing_upload_wizard_line
+msgid "Upload Wizard File Line"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_project__name
+msgid "Project Name"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_project__description
+msgid "Description"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_project__owner_id
+msgid "Owner"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_project__step_count
+msgid "Steps"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_file__name
+msgid "File Name"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_file__project_id
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_version__project_id
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_file_review__project_id
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_review_decision__project_id
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_annotation__project_id
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_upload_wizard__project_id
+msgid "Project"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_file__sequence
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_review_step__sequence
+msgid "Sequence"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_file__current_version_id
+msgid "Current Version"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_file__current_version_number
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_version__version_number
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_annotation__version_id
+msgid "Version"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_file__file_review_ids
+msgid "Step Reviews"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_file__thumbnail
+msgid "Thumbnail"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_file__file_type
+msgid "File Type"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields.selection,name:creative_studio.selection__proofing_file__file_type__image
+msgid "Image"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields.selection,name:creative_studio.selection__proofing_file__file_type__video
+msgid "Video"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields.selection,name:creative_studio.selection__proofing_file__file_type__audio
+msgid "Audio"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields.selection,name:creative_studio.selection__proofing_file__file_type__document
+msgid "Document"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields.selection,name:creative_studio.selection__proofing_file__file_type__other
+msgid "Other"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_version__file_id
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_file_review__file_id
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_review_decision__file_id
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_annotation__file_id
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_version__file_data
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_upload_wizard__file_data
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_upload_wizard_line__file_data
+msgid "File"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_version__filename
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_upload_wizard__filename
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_upload_wizard_line__filename
+msgid "Filename"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_version__mimetype
+msgid "MIME Type"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_version__uploaded_by
+msgid "Uploaded By"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_version__upload_date
+msgid "Upload Date"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_version__notes
+msgid "Version Notes"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_review_step__name
+msgid "Step Name"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_review_step__reviewer_ids
+msgid "Reviewers"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_review_step__file_review_ids
+msgid "File Reviews"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_file_review__state
+msgid "Status"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields.selection,name:creative_studio.selection__proofing_file_review__state__not_started
+msgid "Not Started"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields.selection,name:creative_studio.selection__proofing_file_review__state__in_review
+msgid "In Review"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields.selection,name:creative_studio.selection__proofing_file_review__state__approved
+#: model:ir.model.fields.selection,name:creative_studio.selection__proofing_review_decision__decision__approved
+msgid "Approved"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields.selection,name:creative_studio.selection__proofing_file_review__state__changes_requested
+#: model:ir.model.fields.selection,name:creative_studio.selection__proofing_review_decision__decision__changes_requested
+msgid "Changes Requested"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_file_review__decision_ids
+msgid "Decisions"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_file_review__approved_count
+msgid "Approvals"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_file_review__total_decisions
+msgid "Total Decisions"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_file_review__total_reviewers
+msgid "Total Reviewers"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_file_review__decision_summary
+msgid "Progress"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_review_decision__file_review_id
+msgid "File Review"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_review_decision__user_id
+msgid "Reviewer"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_review_decision__decision
+msgid "Decision"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields.selection,name:creative_studio.selection__proofing_review_decision__decision__pending
+msgid "Pending"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_review_decision__decision_date
+msgid "Decision Date"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_review_decision__comment
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_annotation__body
+msgid "Comment"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_review_decision__step_id
+msgid "Step"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_annotation__author_id
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_annotation_reply__author_id
+msgid "Author"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_annotation__annotation_type
+msgid "Type"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields.selection,name:creative_studio.selection__proofing_annotation__annotation_type__point
+msgid "Point"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields.selection,name:creative_studio.selection__proofing_annotation__annotation_type__timestamp
+msgid "Timestamp"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields.selection,name:creative_studio.selection__proofing_annotation__annotation_type__general
+msgid "General"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_annotation__x_percent
+msgid "X Position (%)"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_annotation__y_percent
+msgid "Y Position (%)"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_annotation__page_number
+msgid "Page Number"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_annotation__timestamp_seconds
+msgid "Timestamp (seconds)"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_annotation__drawing_data
+msgid "Drawing Data"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_annotation__visibility
+msgid "Visibility"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields.selection,name:creative_studio.selection__proofing_annotation__visibility__everyone
+msgid "Everyone"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields.selection,name:creative_studio.selection__proofing_annotation__visibility__team_only
+msgid "Team Only"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_annotation__is_resolved
+msgid "Resolved"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_annotation__resolved_by
+msgid "Resolved By"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_annotation__resolved_date
+msgid "Resolved Date"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_annotation__reply_ids
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_annotation__reply_count
+msgid "Replies"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_annotation__attachment_ids
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_annotation_reply__attachment_ids
+msgid "Attachments"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_annotation__mentioned_user_ids
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_annotation_reply__mentioned_user_ids
+msgid "Mentioned Users"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_annotation_reply__body
+msgid "Reply"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_upload_wizard__file_id
+msgid "Existing File"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_upload_wizard__notes
+msgid "Notes"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_upload_wizard_line__wizard_id
+msgid "Wizard"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_tag__name
+msgid "Tag Name"
+msgstr ""
+
+#. module: creative_studio
+#: model:ir.model.fields,field_description:creative_studio.field_proofing_tag__color
+msgid "Color Index"
+msgstr ""
+
+#. module: creative_studio
+#: model_terms:ir.ui.view,arch_db:creative_studio.proofing_project_view_form
+msgid "Open Dashboard"
+msgstr ""
+
+#. module: creative_studio
+#: model_terms:ir.ui.view,arch_db:creative_studio.proofing_project_view_form
+msgid "Upload File"
+msgstr ""
+
+#. module: creative_studio
+#: model_terms:ir.ui.view,arch_db:creative_studio.proofing_file_view_form
+msgid "Upload New Version"
+msgstr ""
+
+#. module: creative_studio
+#: model_terms:ir.ui.view,arch_db:creative_studio.proofing_review_decision_view_tree
+#: model_terms:ir.ui.view,arch_db:creative_studio.proofing_review_decision_view_form
+msgid "Approve"
+msgstr ""
+
+#. module: creative_studio
+#: model_terms:ir.ui.view,arch_db:creative_studio.proofing_review_decision_view_tree
+#: model_terms:ir.ui.view,arch_db:creative_studio.proofing_review_decision_view_form
+msgid "Request Changes"
+msgstr ""
+
+#. module: creative_studio
+#: model_terms:ir.ui.view,arch_db:creative_studio.proofing_annotation_view_form
+msgid "Mark Resolved"
+msgstr ""
+
+#. module: creative_studio
+#: model_terms:ir.ui.view,arch_db:creative_studio.proofing_annotation_view_form
+msgid "Reopen"
+msgstr ""
+
+#. module: creative_studio
+#: model_terms:ir.ui.view,arch_db:creative_studio.proofing_upload_wizard_form
+msgid "Upload"
+msgstr ""
+
+#. module: creative_studio
+#: model_terms:ir.ui.view,arch_db:creative_studio.proofing_upload_wizard_form
+msgid "Cancel"
+msgstr ""
+
+#. module: creative_studio
+#: model_terms:ir.ui.view,arch_db:creative_studio.proofing_file_view_form
+msgid "Review Status"
+msgstr ""
+
+#. module: creative_studio
+#: model_terms:ir.ui.view,arch_db:creative_studio.proofing_file_view_form
+msgid "Preview"
+msgstr ""
+
+#. module: creative_studio
+#: model_terms:ir.ui.view,arch_db:creative_studio.proofing_file_review_view_form
+msgid "Reviewer Decisions"
+msgstr ""
+
+#. module: creative_studio
+#: model_terms:ir.ui.view,arch_db:creative_studio.proofing_project_view_search
+msgid "My Projects"
+msgstr ""
+
+#. module: creative_studio
+#: model_terms:ir.ui.view,arch_db:creative_studio.proofing_review_decision_view_search
+msgid "Awaiting My Review"
+msgstr ""
+
+#. module: creative_studio
+#: model_terms:ir.ui.view,arch_db:creative_studio.proofing_annotation_view_search
+msgid "Unresolved"
+msgstr ""
+
+#. module: creative_studio
+#: model_terms:ir.ui.view,arch_db:creative_studio.proofing_annotation_view_search
+msgid "My Annotations"
+msgstr ""
+
+#. module: creative_studio
+#: model_terms:ir.ui.view,arch_db:creative_studio.proofing_project_action
+msgid "Create your first creative studio project"
+msgstr ""
+
+#. module: creative_studio
+#: model_terms:ir.ui.view,arch_db:creative_studio.proofing_project_action
+msgid "Organize files, collect feedback, and manage approvals."
+msgstr ""
+
+#. module: creative_studio
+#: model_terms:ir.ui.view,arch_db:creative_studio.proofing_project_view_kanban
+msgid "files"
+msgstr ""
+
+#. module: creative_studio
+#: model_terms:ir.ui.view,arch_db:creative_studio.proofing_project_view_kanban
+msgid "Project settings"
+msgstr ""
+
+#. module: creative_studio
+#: code:addons/creative_studio/static/src/js/project_dashboard.js:0
+msgid "Failed to load project data"
+msgstr ""
+
+#. module: creative_studio
+#: code:addons/creative_studio/static/src/js/project_dashboard.js:0
+msgid "In review"
+msgstr ""
+
+#. module: creative_studio
+#: code:addons/creative_studio/static/src/js/project_dashboard.js:0
+msgid "Changes requested"
+msgstr ""
+
+#. module: creative_studio
+#: code:addons/creative_studio/static/src/js/project_dashboard.js:0
+msgid "Review not started"
+msgstr ""
+
+#. module: creative_studio
+#: code:addons/creative_studio/static/src/js/review_page.js:0
+msgid "Failed to load review data"
+msgstr ""
+
+#. module: creative_studio
+#: code:addons/creative_studio/static/src/js/review_page.js:0
+msgid "Approved!"
+msgstr ""
+
+#. module: creative_studio
+#: code:addons/creative_studio/static/src/js/review_page.js:0
+msgid "Microphone access denied"
+msgstr ""
+
