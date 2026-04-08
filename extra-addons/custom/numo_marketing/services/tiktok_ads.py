@@ -1,11 +1,13 @@
 """TikTok Ads adapter using Marketing API with raw requests."""
 import logging
+from datetime import date
 
 from .base_adapter import BaseAdAdapter
 
 _logger = logging.getLogger(__name__)
 
-TIKTOK_API_URL = 'https://business-api.tiktok.com/open_api/v1.3'
+API_VERSION = 'v1.3'
+BASE_URL = f'https://business-api.tiktok.com/open_api/{API_VERSION}'
 
 
 class TikTokAdsAdapter(BaseAdAdapter):
@@ -17,12 +19,12 @@ class TikTokAdsAdapter(BaseAdAdapter):
     def authenticate(self) -> str:
         return self.credentials['access_token']
 
-    def fetch_campaign_data(self, date_from, date_to):
+    def fetch_campaign_data(self, date_from: date, date_to: date) -> list[dict]:
         token = self.authenticate()
         advertiser_id = self.credentials['advertiser_id']
         df, dt = self._date_range_str(date_from, date_to)
 
-        url = f"{TIKTOK_API_URL}/report/integrated/get/"
+        url = f"{BASE_URL}/report/integrated/get/"
         headers = {
             'Access-Token': token,
             'Content-Type': 'application/json',
@@ -49,7 +51,7 @@ class TikTokAdsAdapter(BaseAdAdapter):
                 )
 
             page_info = data.get('data', {}).get('page_info', {})
-            for item in data.get('data', {}).get('list', []):
+            for item in (data.get('data', {}).get('list') or []):
                 dims = item.get('dimensions', {})
                 mets = item.get('metrics', {})
                 rows.append({
@@ -62,7 +64,6 @@ class TikTokAdsAdapter(BaseAdAdapter):
                     'conversions': int(float(mets.get('conversion', 0))),
                 })
 
-            # Pagination
             total_page = page_info.get('total_page', 1)
             if payload['page'] >= total_page:
                 break

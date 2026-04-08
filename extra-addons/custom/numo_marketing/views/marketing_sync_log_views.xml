@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!-- Sync Log: Tree View -->
+    <!-- ============================================================ -->
+    <record id="view_marketing_sync_log_tree" model="ir.ui.view">
+        <field name="name">numo.marketing.sync.log.tree</field>
+        <field name="model">numo.marketing.sync.log</field>
+        <field name="arch" type="xml">
+            <tree string="Sync Logs" default_order="create_date desc"
+                  decoration-danger="status == 'error'"
+                  decoration-warning="status == 'partial'"
+                  decoration-success="status == 'done'"
+                  decoration-muted="status == 'pending'">
+                <field name="create_date" string="Run At"/>
+                <field name="account_id"/>
+                <field name="platform"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="status" widget="badge"
+                       decoration-success="status == 'done'"
+                       decoration-danger="status == 'error'"
+                       decoration-warning="status in ('partial', 'running')"
+                       decoration-info="status == 'pending'"/>
+                <field name="records_fetched"/>
+                <field name="records_created"/>
+                <field name="records_updated"/>
+                <field name="duration_seconds" string="Duration (s)"/>
+                <field name="retry_count" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- Sync Log: Form View -->
+    <!-- ============================================================ -->
+    <record id="view_marketing_sync_log_form" model="ir.ui.view">
+        <field name="name">numo.marketing.sync.log.form</field>
+        <field name="model">numo.marketing.sync.log</field>
+        <field name="arch" type="xml">
+            <form string="Sync Log" create="false" edit="false">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="account_id"/>
+                            <field name="platform"/>
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                            <field name="status" widget="badge"/>
+                        </group>
+                        <group>
+                            <field name="records_fetched"/>
+                            <field name="records_created"/>
+                            <field name="records_updated"/>
+                            <field name="duration_seconds"/>
+                            <field name="retry_count"/>
+                            <field name="response_status"/>
+                        </group>
+                    </group>
+                    <group string="Error Details"
+                           invisible="not error_message">
+                        <field name="error_message" nolabel="1"
+                               colspan="2" readonly="1"/>
+                    </group>
+                    <group string="Request Details"
+                           invisible="not request_url">
+                        <field name="request_url"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- Sync Log: Search View -->
+    <!-- ============================================================ -->
+    <record id="view_marketing_sync_log_search" model="ir.ui.view">
+        <field name="name">numo.marketing.sync.log.search</field>
+        <field name="model">numo.marketing.sync.log</field>
+        <field name="arch" type="xml">
+            <search string="Sync Logs">
+                <field name="account_id"/>
+                <separator/>
+                <filter string="Success" name="done"
+                        domain="[('status', '=', 'done')]"/>
+                <filter string="Errors" name="errors"
+                        domain="[('status', '=', 'error')]"/>
+                <filter string="Running" name="running"
+                        domain="[('status', '=', 'running')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Account" name="group_account"
+                            context="{'group_by': 'account_id'}"/>
+                    <filter string="Platform" name="group_platform"
+                            context="{'group_by': 'platform'}"/>
+                    <filter string="Status" name="group_status"
+                            context="{'group_by': 'status'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- Sync Log: Action -->
+    <!-- ============================================================ -->
+    <record id="action_marketing_sync_log" model="ir.actions.act_window">
+        <field name="name">Sync Logs</field>
+        <field name="res_model">numo.marketing.sync.log</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_marketing_sync_log_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No sync logs yet
+            </p>
+            <p>Logs appear here when ad accounts are synced.</p>
+        </field>
+    </record>
+
+</odoo>

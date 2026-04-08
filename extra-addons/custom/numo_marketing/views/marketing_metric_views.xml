@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!-- Metric: Tree View -->
+    <!-- ============================================================ -->
+    <record id="view_marketing_metric_tree" model="ir.ui.view">
+        <field name="name">numo.marketing.metric.tree</field>
+        <field name="model">numo.marketing.metric</field>
+        <field name="arch" type="xml">
+            <tree string="Daily Metrics" default_order="date desc">
+                <field name="date"/>
+                <field name="campaign_id"/>
+                <field name="platform"/>
+                <field name="project_analytic_id" optional="show"/>
+                <field name="impressions" sum="Total"/>
+                <field name="clicks" sum="Total"/>
+                <field name="spend" sum="Total"/>
+                <field name="conversions" sum="Total"/>
+                <field name="leads_count" sum="Total"/>
+                <field name="won_count" sum="Total"/>
+                <field name="revenue" sum="Total"/>
+                <field name="ctr" optional="hide"/>
+                <field name="cpc" optional="hide"/>
+                <field name="cpl" optional="hide"/>
+                <field name="roas" optional="show"
+                       decoration-success="roas >= 2"
+                       decoration-danger="roas &lt; 1"/>
+                <field name="profit" sum="Total" optional="show"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- Metric: Form View -->
+    <!-- ============================================================ -->
+    <record id="view_marketing_metric_form" model="ir.ui.view">
+        <field name="name">numo.marketing.metric.form</field>
+        <field name="model">numo.marketing.metric</field>
+        <field name="arch" type="xml">
+            <form string="Marketing Metric">
+                <sheet>
+                    <group>
+                        <group string="Campaign">
+                            <field name="campaign_id"/>
+                            <field name="date"/>
+                            <field name="platform"/>
+                            <field name="project_analytic_id"/>
+                            <field name="sync_source"/>
+                        </group>
+                        <group string="Raw Metrics">
+                            <field name="impressions"/>
+                            <field name="clicks"/>
+                            <field name="spend"/>
+                            <field name="conversions"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="CRM Metrics">
+                            <field name="leads_count"/>
+                            <field name="qualified_count"/>
+                            <field name="won_count"/>
+                            <field name="lost_count"/>
+                            <field name="revenue"/>
+                        </group>
+                        <group string="Computed KPIs">
+                            <field name="ctr"/>
+                            <field name="cpc"/>
+                            <field name="cpl"/>
+                            <field name="cpa"/>
+                            <field name="roas"/>
+                            <field name="conversion_rate"/>
+                            <field name="lead_to_sale_rate"/>
+                            <field name="profit"/>
+                        </group>
+                    </group>
+                    <group string="Time Dimensions" col="4">
+                        <field name="year"/>
+                        <field name="month"/>
+                        <field name="week_number"/>
+                        <field name="day_of_week"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- Metric: Search View -->
+    <!-- ============================================================ -->
+    <record id="view_marketing_metric_search" model="ir.ui.view">
+        <field name="name">numo.marketing.metric.search</field>
+        <field name="model">numo.marketing.metric</field>
+        <field name="arch" type="xml">
+            <search string="Metrics">
+                <field name="campaign_id"/>
+                <field name="project_analytic_id"/>
+                <separator/>
+                <filter string="This Month" name="this_month"
+                        domain="[('date', '>=', (context_today() - relativedelta(day=1)).strftime('%%Y-%%m-%%d')),
+                                 ('date', '&lt;=', context_today().strftime('%%Y-%%m-%%d'))]"/>
+                <filter string="Last Month" name="last_month"
+                        domain="[('date', '>=', (context_today() - relativedelta(months=1, day=1)).strftime('%%Y-%%m-%%d')),
+                                 ('date', '&lt;=', (context_today() - relativedelta(day=1, days=1)).strftime('%%Y-%%m-%%d'))]"/>
+                <filter string="Last 7 Days" name="last_7_days"
+                        domain="[('date', '>=', (context_today() - relativedelta(days=7)).strftime('%%Y-%%m-%%d'))]"/>
+                <filter string="Last 30 Days" name="last_30_days"
+                        domain="[('date', '>=', (context_today() - relativedelta(days=30)).strftime('%%Y-%%m-%%d'))]"/>
+                <separator/>
+                <filter string="Google Ads" name="google"
+                        domain="[('platform', '=', 'google_ads')]"/>
+                <filter string="Meta" name="meta"
+                        domain="[('platform', '=', 'meta')]"/>
+                <filter string="TikTok" name="tiktok"
+                        domain="[('platform', '=', 'tiktok')]"/>
+                <filter string="Snapchat" name="snapchat"
+                        domain="[('platform', '=', 'snapchat')]"/>
+                <filter string="X" name="x_ads"
+                        domain="[('platform', '=', 'x_ads')]"/>
+                <separator/>
+                <filter string="API Sync" name="api"
+                        domain="[('sync_source', '=', 'api')]"/>
+                <filter string="Manual" name="manual"
+                        domain="[('sync_source', '=', 'manual')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Campaign" name="group_campaign"
+                            context="{'group_by': 'campaign_id'}"/>
+                    <filter string="Platform" name="group_platform"
+                            context="{'group_by': 'platform'}"/>
+                    <filter string="Project" name="group_project"
+                            context="{'group_by': 'project_analytic_id'}"/>
+                    <filter string="Month" name="group_month"
+                            context="{'group_by': 'month'}"/>
+                    <filter string="Week" name="group_week"
+                            context="{'group_by': 'week_number'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- Metric: Pivot View -->
+    <!-- ============================================================ -->
+    <record id="view_marketing_metric_pivot" model="ir.ui.view">
+        <field name="name">numo.marketing.metric.pivot</field>
+        <field name="model">numo.marketing.metric</field>
+        <field name="arch" type="xml">
+            <pivot string="Marketing Metrics" sample="1">
+                <field name="platform" type="col"/>
+                <field name="month" type="row"/>
+                <field name="spend" type="measure"/>
+                <field name="revenue" type="measure"/>
+                <field name="leads_count" type="measure"/>
+                <field name="clicks" type="measure"/>
+                <field name="impressions" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- Metric: Graph View -->
+    <!-- ============================================================ -->
+    <record id="view_marketing_metric_graph" model="ir.ui.view">
+        <field name="name">numo.marketing.metric.graph</field>
+        <field name="model">numo.marketing.metric</field>
+        <field name="arch" type="xml">
+            <graph string="Marketing Metrics" type="bar" sample="1">
+                <field name="month" type="row"/>
+                <field name="spend" type="measure"/>
+                <field name="revenue" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- Metric: Action -->
+    <!-- ============================================================ -->
+    <record id="action_marketing_metric" model="ir.actions.act_window">
+        <field name="name">Metrics</field>
+        <field name="res_model">numo.marketing.metric</field>
+        <field name="view_mode">tree,pivot,graph,form</field>
+        <field name="search_view_id" ref="view_marketing_metric_search"/>
+        <field name="context">{'search_default_this_month': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No metrics yet
+            </p>
+            <p>Metrics are populated automatically by ad account sync, or you can enter them manually.</p>
+        </field>
+    </record>
+
+</odoo>

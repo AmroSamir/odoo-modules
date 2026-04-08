@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!-- Campaign: Form View -->
+    <!-- ============================================================ -->
+    <record id="view_marketing_campaign_form" model="ir.ui.view">
+        <field name="name">numo.marketing.campaign.form</field>
+        <field name="model">numo.marketing.campaign</field>
+        <field name="arch" type="xml">
+            <form string="Marketing Campaign">
+                <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger"
+                            invisible="active"/>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Campaign Name"/></h1>
+                    </div>
+                    <group>
+                        <group string="Campaign Details">
+                            <field name="account_id"/>
+                            <field name="platform"/>
+                            <field name="external_id"/>
+                            <field name="campaign_type"/>
+                            <field name="utm_campaign_id"/>
+                        </group>
+                        <group string="Linking">
+                            <field name="project_analytic_id"/>
+                            <field name="product_id"/>
+                            <field name="owner_id"/>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                    </group>
+                    <group string="Aggregated KPIs" col="6">
+                        <field name="total_spend"/>
+                        <field name="total_impressions"/>
+                        <field name="total_clicks"/>
+                        <field name="total_leads"/>
+                        <field name="total_revenue"/>
+                        <field name="roas"/>
+                    </group>
+                    <notebook>
+                        <page string="Daily Metrics" name="metrics">
+                            <field name="metric_ids">
+                                <tree editable="bottom" default_order="date desc">
+                                    <field name="date"/>
+                                    <field name="impressions" sum="Total"/>
+                                    <field name="clicks" sum="Total"/>
+                                    <field name="spend" sum="Total"/>
+                                    <field name="conversions" sum="Total"/>
+                                    <field name="leads_count" sum="Total"/>
+                                    <field name="won_count" sum="Total"/>
+                                    <field name="revenue" sum="Total"/>
+                                    <field name="ctr"/>
+                                    <field name="cpl"/>
+                                    <field name="roas"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- Campaign: Tree View -->
+    <!-- ============================================================ -->
+    <record id="view_marketing_campaign_tree" model="ir.ui.view">
+        <field name="name">numo.marketing.campaign.tree</field>
+        <field name="model">numo.marketing.campaign</field>
+        <field name="arch" type="xml">
+            <tree string="Marketing Campaigns"
+                  decoration-muted="not active">
+                <field name="name"/>
+                <field name="platform"/>
+                <field name="project_analytic_id" optional="show"/>
+                <field name="owner_id" widget="many2one_avatar_user"/>
+                <field name="total_spend" sum="Total Spend"/>
+                <field name="total_leads" sum="Total Leads"/>
+                <field name="total_revenue" sum="Total Revenue"/>
+                <field name="roas" decoration-success="roas >= 2"
+                       decoration-danger="roas &lt; 1"
+                       decoration-warning="roas >= 1 and roas &lt; 2"/>
+                <field name="active" column_invisible="True"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- Campaign: Search View -->
+    <!-- ============================================================ -->
+    <record id="view_marketing_campaign_search" model="ir.ui.view">
+        <field name="name">numo.marketing.campaign.search</field>
+        <field name="model">numo.marketing.campaign</field>
+        <field name="arch" type="xml">
+            <search string="Campaigns">
+                <field name="name"/>
+                <field name="project_analytic_id"/>
+                <field name="owner_id"/>
+                <separator/>
+                <filter string="Active" name="active"
+                        domain="[('active', '=', True)]"/>
+                <filter string="Archived" name="archived"
+                        domain="[('active', '=', False)]"/>
+                <separator/>
+                <filter string="Google Ads" name="google"
+                        domain="[('platform', '=', 'google_ads')]"/>
+                <filter string="Meta" name="meta"
+                        domain="[('platform', '=', 'meta')]"/>
+                <filter string="TikTok" name="tiktok"
+                        domain="[('platform', '=', 'tiktok')]"/>
+                <filter string="Snapchat" name="snapchat"
+                        domain="[('platform', '=', 'snapchat')]"/>
+                <filter string="X" name="x_ads"
+                        domain="[('platform', '=', 'x_ads')]"/>
+                <separator/>
+                <filter string="My Campaigns" name="my_campaigns"
+                        domain="[('owner_id', '=', uid)]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Platform" name="group_platform"
+                            context="{'group_by': 'platform'}"/>
+                    <filter string="Project" name="group_project"
+                            context="{'group_by': 'project_analytic_id'}"/>
+                    <filter string="Owner" name="group_owner"
+                            context="{'group_by': 'owner_id'}"/>
+                    <filter string="Type" name="group_type"
+                            context="{'group_by': 'campaign_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- Campaign: Action -->
+    <!-- ============================================================ -->
+    <record id="action_marketing_campaign" model="ir.actions.act_window">
+        <field name="name">Campaigns</field>
+        <field name="res_model">numo.marketing.campaign</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_marketing_campaign_search"/>
+        <field name="context">{'search_default_active': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No campaigns yet
+            </p>
+            <p>Campaigns are created automatically when syncing ad accounts, or you can create them manually.</p>
+        </field>
+    </record>
+
+</odoo>

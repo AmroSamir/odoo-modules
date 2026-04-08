@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Client Action: Marketing Dashboard -->
+    <!-- Dashboard Client Action (placeholder — Phase 4 will build the OWL component) -->
     <record id="action_marketing_dashboard" model="ir.actions.client">
         <field name="name">Marketing Dashboard</field>
         <field name="tag">numo_marketing.marketing_dashboard</field>

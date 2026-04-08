@@ -1,1 +1,1 @@
-from . import manual_spend_wizard
+from . import manual_entry_wizard

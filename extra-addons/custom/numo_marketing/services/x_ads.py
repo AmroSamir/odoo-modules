@@ -6,12 +6,14 @@ import logging
 import time
 import urllib.parse
 import uuid
+from datetime import date
 
 from .base_adapter import BaseAdAdapter
 
 _logger = logging.getLogger(__name__)
 
-X_ADS_API_URL = 'https://ads-api.x.com/12'
+API_VERSION = '12'
+BASE_URL = f'https://ads-api.x.com/{API_VERSION}'
 
 
 class XAdsAdapter(BaseAdAdapter):
@@ -43,11 +45,13 @@ class XAdsAdapter(BaseAdAdapter):
         if params:
             all_params.update(params)
 
-        # Create signature base string
         sorted_params = urllib.parse.urlencode(sorted(all_params.items()))
-        base_string = f"{method.upper()}&{urllib.parse.quote(url, safe='')}&{urllib.parse.quote(sorted_params, safe='')}"
+        base_string = (
+            f"{method.upper()}"
+            f"&{urllib.parse.quote(url, safe='')}"
+            f"&{urllib.parse.quote(sorted_params, safe='')}"
+        )
 
-        # Create signing key
         signing_key = (
             f"{urllib.parse.quote(self.credentials['consumer_secret'], safe='')}"
             f"&{urllib.parse.quote(self.credentials['access_secret'], safe='')}"
@@ -65,11 +69,12 @@ class XAdsAdapter(BaseAdAdapter):
         )
         return auth_header
 
-    def fetch_campaign_data(self, date_from, date_to):
+    def fetch_campaign_data(self, date_from: date, date_to: date) -> list[dict]:
         ad_account_id = self.credentials['ad_account_id']
         df, dt = self._date_range_str(date_from, date_to)
 
-        url = f"{X_ADS_API_URL}/stats/accounts/{ad_account_id}"
+        # Step 1: Get stats
+        url = f"{BASE_URL}/stats/accounts/{ad_account_id}"
         params = {
             'entity': 'CAMPAIGN',
             'start_time': f"{df}T00:00:00Z",
@@ -88,8 +93,8 @@ class XAdsAdapter(BaseAdAdapter):
         resp.raise_for_status()
         data = resp.json()
 
-        # Get campaign names
-        campaigns_url = f"{X_ADS_API_URL}/accounts/{ad_account_id}/campaigns"
+        # Step 2: Get campaign names
+        campaigns_url = f"{BASE_URL}/accounts/{ad_account_id}/campaigns"
         camp_auth = self._oauth1_header('GET', campaigns_url)
         camp_resp = self.session.get(
             campaigns_url,
@@ -100,24 +105,32 @@ class XAdsAdapter(BaseAdAdapter):
         camp_data = camp_resp.json()
 
         campaign_names = {}
-        for c in camp_data.get('data', []):
+        for c in (camp_data.get('data') or []):
             campaign_names[c.get('id')] = c.get('name', '')
 
+        # Step 3: Normalize rows
         rows = []
-        for entry in data.get('data', []):
+        for entry in (data.get('data') or []):
             campaign_id = entry.get('id', '')
-            id_data = entry.get('id_data', [])
-            for day_data in id_data:
+            for day_data in (entry.get('id_data') or []):
                 metrics = day_data.get('metrics', {})
                 date_str = day_data.get('segment', {}).get('start_time', '')[:10]
+                if not date_str:
+                    continue
                 rows.append({
-                    'campaign_name': campaign_names.get(campaign_id, f'Campaign {campaign_id}'),
+                    'campaign_name': campaign_names.get(
+                        campaign_id, f'Campaign {campaign_id}',
+                    ),
                     'campaign_external_id': campaign_id,
                     'date': date_str,
                     'impressions': int(sum(metrics.get('impressions', [0]))),
                     'clicks': int(sum(metrics.get('clicks', [0]))),
-                    'spend': float(sum(metrics.get('billed_charge_local_micro', [0]))) / 1_000_000,
-                    'conversions': int(sum(metrics.get('conversion_purchases', [0]))),
+                    'spend': float(sum(
+                        metrics.get('billed_charge_local_micro', [0])
+                    )) / 1_000_000,
+                    'conversions': int(sum(
+                        metrics.get('conversion_purchases', [0])
+                    )),
                 })
 
         _logger.info("X Ads: fetched %d rows for %s to %s", len(rows), df, dt)

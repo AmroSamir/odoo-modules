@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Team members see only their campaigns (or unassigned) -->
+    <record id="rule_campaign_team_member" model="ir.rule">
+        <field name="name">Marketing Campaign: Team Member</field>
+        <field name="model_id" ref="model_numo_marketing_campaign"/>
+        <field name="domain_force">['|', ('owner_id', '=', user.id), ('owner_id', '=', False)]</field>
+        <field name="groups" eval="[(4, ref('numo_marketing.group_marketing_team'))]"/>
+    </record>
+
+    <!-- Managers see all campaigns -->
+    <record id="rule_campaign_manager" model="ir.rule">
+        <field name="name">Marketing Campaign: Manager</field>
+        <field name="model_id" ref="model_numo_marketing_campaign"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('numo_marketing.group_marketing_manager'))]"/>
+    </record>
+
+    <!-- Metrics: all team members can read all (needed for dashboard) -->
+    <!-- No record rule on metrics — access CSV handles read-only for team -->
+
+    <!-- Reports: team can see all reports, only managers can edit -->
+    <!-- Handled via ir.model.access.csv (read-only for team) -->
+</odoo>

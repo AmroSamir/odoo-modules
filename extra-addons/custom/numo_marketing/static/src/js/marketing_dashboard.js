@@ -1,45 +1,45 @@
 /** @odoo-module **/
+
+import { Component, useState, useRef, onWillStart, onMounted, onWillUnmount } from "@odoo/owl";
 import { registry } from "@web/core/registry";
-import { Component, useState, onWillStart, onMounted, onPatched, onWillUnmount, useRef } from "@odoo/owl";
 import { useService } from "@web/core/utils/hooks";
+import { createChart, getPlatformColors, formatValue, getAxisOptions, CHART_COLORS } from "./chart_helpers";
+import { renderFunnel } from "./funnel_plugin";
 
 class MarketingDashboard extends Component {
     static template = "numo_marketing.MarketingDashboard";
-    static props = { action: { type: Object, optional: true } };
 
     setup() {
         this.orm = useService("orm");
-        this.actionService = useService("action");
+        this.action = useService("action");
 
-        this.spendRevenueRef = useRef("spendRevenueChart");
+        // Refs for chart canvases
+        this.trendRef = useRef("trendChart");
         this.platformRef = useRef("platformChart");
         this.projectRef = useRef("projectChart");
+        this.contributionRef = useRef("contributionChart");
+        this.funnelRef = useRef("funnelContainer");
 
+        // Chart instances
+        this._charts = {};
+
+        // State
         this.state = useState({
-            data: null,
             loading: true,
-            error: "",
+            data: null,
             filters: {
-                date_from: "",
-                date_to: "",
-                platform: "",
-                project_id: "",
-                campaign_id: "",
+                date_from: this._defaultDateFrom(),
+                date_to: this._today(),
+                platform: '',
+                project_id: 0,
+                campaign_id: 0,
+                compare: false,
             },
+            activeTemplate: 'all', // report template preset
         });
-
-        this._charts = [];
 
         onWillStart(async () => {
             await this.loadData();
-        });
-
-        // Render charts after every DOM patch (handles initial mount + filter updates)
-        onPatched(() => {
-            if (!this.state.loading && this.state.data && !this.state.error) {
-                this.destroyCharts();
-                this.renderCharts();
-            }
         });
 
         onMounted(() => {
@@ -51,272 +51,293 @@ class MarketingDashboard extends Component {
         });
     }
 
+    // -------------------------------------------------------------------------
+    // Data Loading
+    // -------------------------------------------------------------------------
     async loadData() {
         this.state.loading = true;
-        this.state.error = "";
-        const filters = {};
-        const f = this.state.filters;
-        if (f.date_from) filters.date_from = f.date_from;
-        if (f.date_to) filters.date_to = f.date_to;
-        if (f.platform) filters.platform = f.platform;
-        if (f.project_id) filters.project_id = parseInt(f.project_id);
-        if (f.campaign_id) filters.campaign_id = parseInt(f.campaign_id);
-
         try {
-            this.state.data = await this.orm.call(
-                "numo.campaign.spend",
+            const filters = { ...this.state.filters };
+            // Clean empty filters
+            if (!filters.platform) delete filters.platform;
+            if (!filters.project_id) delete filters.project_id;
+            if (!filters.campaign_id) delete filters.campaign_id;
+
+            const data = await this.orm.call(
+                "numo.marketing.metric",
                 "get_dashboard_data",
                 [filters],
             );
+            this.state.data = data;
         } catch (e) {
-            this.state.error = e.message || "Failed to load dashboard data";
+            console.error("Dashboard load error:", e);
+            this.state.data = null;
         }
         this.state.loading = false;
     }
 
-    async onApplyFilters() {
-        await this.loadData();
-    }
-
-    async onResetFilters() {
-        this.state.filters.date_from = "";
-        this.state.filters.date_to = "";
-        this.state.filters.platform = "";
-        this.state.filters.project_id = "";
-        this.state.filters.campaign_id = "";
-        await this.loadData();
-    }
-
-    onDateFromChange(ev) {
-        this.state.filters.date_from = ev.target.value;
-    }
-
-    onDateToChange(ev) {
-        this.state.filters.date_to = ev.target.value;
-    }
-
-    onPlatformChange(ev) {
-        this.state.filters.platform = ev.target.value;
-    }
-
-    onProjectChange(ev) {
-        this.state.filters.project_id = ev.target.value;
-    }
-
-    onCampaignChange(ev) {
-        this.state.filters.campaign_id = ev.target.value;
-    }
-
-    openSpendList() {
-        this.actionService.doAction("numo_marketing.action_campaign_spend");
-    }
-
-    T(key) {
-        return this.state.data && this.state.data.T
-            ? this.state.data.T[key] || key
-            : key;
-    }
-
-    formatNumber(val) {
-        if (val === undefined || val === null) return "0";
-        if (Math.abs(val) >= 1000000) {
-            return (val / 1000000).toFixed(1) + "M";
-        }
-        if (Math.abs(val) >= 1000) {
-            return (val / 1000).toFixed(1) + "K";
-        }
-        return Number.isInteger(val) ? val.toString() : val.toFixed(2);
-    }
-
-    formatCurrency(val) {
-        return this.formatNumber(val);
-    }
-
-    formatPercent(val) {
-        if (val === undefined || val === null) return "0%";
-        return val.toFixed(1) + "%";
-    }
-
     // -------------------------------------------------------------------------
-    // Chart rendering — driven by onPatched lifecycle
+    // Filters
     // -------------------------------------------------------------------------
-    destroyCharts() {
-        for (const chart of this._charts) {
-            chart.destroy();
+    onFilterChange(field, ev) {
+        const val = ev.target.value;
+        if (field === 'project_id' || field === 'campaign_id') {
+            this.state.filters[field] = val ? parseInt(val) : 0;
+        } else {
+            this.state.filters[field] = val;
         }
-        this._charts = [];
     }
 
-    renderCharts() {
-        if (!this.state.data || this.state.loading) return;
-        if (typeof Chart === "undefined") return;
-
-        this._renderSpendRevenueChart();
-        this._renderPlatformChart();
-        this._renderProjectChart();
+    onCompareToggle(ev) {
+        this.state.filters.compare = ev.target.checked;
     }
 
-    _getChartColors() {
-        return {
-            spend: "rgba(239, 68, 68, 0.8)",
-            revenue: "rgba(34, 197, 94, 0.8)",
-            leads: "rgba(59, 130, 246, 0.8)",
-            won: "rgba(168, 85, 247, 0.8)",
-            platforms: [
-                "rgba(66, 133, 244, 0.8)",
-                "rgba(24, 119, 242, 0.8)",
-                "rgba(0, 0, 0, 0.7)",
-                "rgba(255, 252, 0, 0.8)",
-                "rgba(29, 161, 242, 0.8)",
-                "rgba(156, 163, 175, 0.8)",
-            ],
+    async applyFilters() {
+        await this.loadData();
+        this.renderCharts();
+    }
+
+    resetFilters() {
+        this.state.filters = {
+            date_from: this._defaultDateFrom(),
+            date_to: this._today(),
+            platform: '',
+            project_id: 0,
+            campaign_id: 0,
+            compare: false,
         };
+        this.applyFilters();
     }
 
-    _getCommonOptions() {
-        const root = document.documentElement;
-        const textColor = getComputedStyle(root).getPropertyValue("--o-main-text-color").trim() || "#333";
-        const borderColor = getComputedStyle(root).getPropertyValue("--o-border-color").trim() || "#ddd";
+    // -------------------------------------------------------------------------
+    // Report Template Presets
+    // -------------------------------------------------------------------------
+    setTemplate(template) {
+        this.state.activeTemplate = template;
+        // Templates adjust filters to show different slices
+        const presets = {
+            all: { platform: '', project_id: 0, campaign_id: 0 },
+            executive: { platform: '', project_id: 0, campaign_id: 0 },
+            channel: { project_id: 0, campaign_id: 0 },
+            project_roi: { platform: '', campaign_id: 0 },
+            funnel: { platform: '', project_id: 0, campaign_id: 0 },
+        };
+        const preset = presets[template] || presets.all;
+        Object.assign(this.state.filters, preset);
+        this.applyFilters();
+    }
 
-        return {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    labels: { color: textColor, font: { size: 12 } },
+    // -------------------------------------------------------------------------
+    // Chart Rendering
+    // -------------------------------------------------------------------------
+    renderCharts() {
+        if (!this.state.data) return;
+        const d = this.state.data;
+
+        this._renderTrendChart(d.time_series);
+        this._renderPlatformChart(d.platform_breakdown);
+        this._renderProjectChart(d.project_breakdown);
+        this._renderContributionChart(d.channel_contribution);
+        this._renderFunnel(d.funnel);
+    }
+
+    destroyCharts() {
+        Object.values(this._charts).forEach(c => c && c.destroy());
+        this._charts = {};
+    }
+
+    _renderTrendChart(ts) {
+        const canvas = this.trendRef.el;
+        if (!canvas || !ts.labels.length) return;
+
+        this._charts.trend = createChart(this._charts.trend, canvas, 'bar', {
+            labels: ts.labels.map(d => d.slice(5)), // MM-DD
+            datasets: [
+                {
+                    label: this.T('spend'),
+                    data: ts.spend,
+                    backgroundColor: 'rgba(99, 102, 241, 0.7)',
+                    borderColor: '#6366F1',
+                    borderWidth: 1,
+                    borderRadius: 4,
+                    order: 2,
                 },
+                {
+                    label: this.T('revenue'),
+                    data: ts.revenue,
+                    type: 'line',
+                    borderColor: '#10B981',
+                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                    borderWidth: 2,
+                    pointRadius: 3,
+                    pointBackgroundColor: '#10B981',
+                    fill: true,
+                    tension: 0.3,
+                    order: 1,
+                },
+            ],
+        }, {
+            scales: getAxisOptions(),
+            plugins: {
+                legend: { display: true, position: 'bottom' },
             },
+        });
+    }
+
+    _renderPlatformChart(pb) {
+        const canvas = this.platformRef.el;
+        if (!canvas || !pb.labels.length) return;
+
+        this._charts.platform = createChart(this._charts.platform, canvas, 'doughnut', {
+            labels: pb.labels,
+            datasets: [{
+                data: pb.spend,
+                backgroundColor: getPlatformColors(pb.labels),
+                borderWidth: 2,
+                borderColor: '#ffffff',
+                hoverOffset: 8,
+            }],
+        }, {
+            cutout: '65%',
+            plugins: {
+                legend: { display: true, position: 'bottom' },
+            },
+        });
+    }
+
+    _renderProjectChart(proj) {
+        const canvas = this.projectRef.el;
+        if (!canvas || !proj.labels.length) return;
+
+        this._charts.project = createChart(this._charts.project, canvas, 'bar', {
+            labels: proj.labels,
+            datasets: [
+                {
+                    label: this.T('spend'),
+                    data: proj.spend,
+                    backgroundColor: 'rgba(99, 102, 241, 0.7)',
+                    borderRadius: 4,
+                },
+                {
+                    label: this.T('revenue'),
+                    data: proj.revenue,
+                    backgroundColor: 'rgba(16, 185, 129, 0.7)',
+                    borderRadius: 4,
+                },
+            ],
+        }, {
+            indexAxis: 'y',
             scales: {
                 x: {
-                    ticks: { color: textColor },
-                    grid: { color: borderColor + "33" },
+                    grid: { color: 'rgba(0,0,0,0.06)' },
+                    ticks: { callback: (v) => formatValue(v, 'compact') },
                 },
+                y: { grid: { display: false } },
+            },
+        });
+    }
+
+    _renderContributionChart(contrib) {
+        const canvas = this.contributionRef.el;
+        if (!canvas || !contrib.length) return;
+
+        const labels = contrib.map(c => c.platform);
+        this._charts.contribution = createChart(this._charts.contribution, canvas, 'bar', {
+            labels,
+            datasets: [
+                {
+                    label: this.T('spend') + ' %',
+                    data: contrib.map(c => c.spend_pct),
+                    backgroundColor: 'rgba(99, 102, 241, 0.7)',
+                    borderRadius: 4,
+                },
+                {
+                    label: this.T('leads') + ' %',
+                    data: contrib.map(c => c.leads_pct),
+                    backgroundColor: 'rgba(245, 158, 11, 0.7)',
+                    borderRadius: 4,
+                },
+                {
+                    label: this.T('revenue') + ' %',
+                    data: contrib.map(c => c.revenue_pct),
+                    backgroundColor: 'rgba(16, 185, 129, 0.7)',
+                    borderRadius: 4,
+                },
+            ],
+        }, {
+            scales: {
+                x: { grid: { display: false } },
                 y: {
-                    ticks: { color: textColor },
-                    grid: { color: borderColor + "33" },
-                },
-            },
-        };
-    }
-
-    _renderSpendRevenueChart() {
-        const el = this.spendRevenueRef.el;
-        if (!el) return;
-        const ctx = el.getContext("2d");
-        const ts = this.state.data.time_series;
-        const colors = this._getChartColors();
-        const opts = this._getCommonOptions();
-
-        const chart = new Chart(ctx, {
-            type: "bar",
-            data: {
-                labels: ts.labels,
-                datasets: [
-                    {
-                        label: this.T("spend"),
-                        data: ts.spend,
-                        backgroundColor: colors.spend,
-                        order: 2,
-                    },
-                    {
-                        label: this.T("revenue"),
-                        data: ts.revenue,
-                        backgroundColor: colors.revenue,
-                        order: 1,
-                    },
-                ],
-            },
-            options: {
-                ...opts,
-                plugins: {
-                    ...opts.plugins,
-                    title: {
-                        display: true,
-                        text: this.T("spend_vs_revenue"),
-                        color: opts.scales.x.ticks.color,
-                    },
+                    grid: { color: 'rgba(0,0,0,0.06)' },
+                    ticks: { callback: (v) => v + '%' },
+                    max: 100,
                 },
             },
         });
-        this._charts.push(chart);
     }
 
-    _renderPlatformChart() {
-        const el = this.platformRef.el;
-        if (!el) return;
-        const ctx = el.getContext("2d");
-        const pb = this.state.data.platform_breakdown;
-        const colors = this._getChartColors();
-        const textColor = this._getCommonOptions().scales.x.ticks.color;
-
-        const chart = new Chart(ctx, {
-            type: "doughnut",
-            data: {
-                labels: pb.labels,
-                datasets: [{
-                    data: pb.spend,
-                    backgroundColor: colors.platforms.slice(0, pb.labels.length),
-                }],
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: "bottom",
-                        labels: { color: textColor, font: { size: 11 } },
-                    },
-                    title: {
-                        display: true,
-                        text: this.T("platform_spend"),
-                        color: textColor,
-                    },
-                },
-            },
-        });
-        this._charts.push(chart);
+    _renderFunnel(funnel) {
+        const container = this.funnelRef.el;
+        if (!container || !funnel.length) return;
+        renderFunnel(container, funnel, this.state.data?.T || {});
     }
 
-    _renderProjectChart() {
-        const el = this.projectRef.el;
-        if (!el) return;
-        const ctx = el.getContext("2d");
-        const proj = this.state.data.project_breakdown;
-        const colors = this._getChartColors();
-        const opts = this._getCommonOptions();
+    // -------------------------------------------------------------------------
+    // Helpers
+    // -------------------------------------------------------------------------
+    T(key) {
+        return this.state.data?.T?.[key] || key;
+    }
 
-        const chart = new Chart(ctx, {
-            type: "bar",
-            data: {
-                labels: proj.labels,
-                datasets: [
-                    {
-                        label: this.T("spend"),
-                        data: proj.spend,
-                        backgroundColor: colors.spend,
-                    },
-                    {
-                        label: this.T("revenue"),
-                        data: proj.revenue,
-                        backgroundColor: colors.revenue,
-                    },
-                ],
-            },
-            options: {
-                ...opts,
-                indexAxis: "y",
-                plugins: {
-                    ...opts.plugins,
-                    title: {
-                        display: true,
-                        text: this.T("project_performance"),
-                        color: opts.scales.x.ticks.color,
-                    },
-                },
-            },
-        });
-        this._charts.push(chart);
+    fmt(value, type) {
+        return formatValue(value, type, this.T('sar'));
+    }
+
+    get kpis() {
+        return this.state.data?.kpis || {};
+    }
+
+    get comparison() {
+        return this.state.data?.comparison || {};
+    }
+
+    get hasComparison() {
+        return this.state.filters.compare && Object.keys(this.comparison).length > 0;
+    }
+
+    deltaClass(key) {
+        const comp = this.comparison[key];
+        if (!comp) return '';
+        // For cost metrics (spend, cpl, cpa, cpc), down is good
+        const costMetrics = ['total_spend', 'cpl', 'cpa', 'cpc'];
+        const isGood = costMetrics.includes(key)
+            ? comp.direction === 'down'
+            : comp.direction === 'up';
+        return isGood ? 'numo_delta_up' : (comp.direction === 'flat' ? '' : 'numo_delta_down');
+    }
+
+    deltaIcon(key) {
+        const comp = this.comparison[key];
+        if (!comp || comp.direction === 'flat') return '';
+        return comp.direction === 'up' ? '↑' : '↓';
+    }
+
+    deltaPct(key) {
+        const comp = this.comparison[key];
+        if (!comp) return '';
+        return Math.abs(comp.pct).toFixed(1) + '%';
+    }
+
+    _today() {
+        return new Date().toISOString().slice(0, 10);
+    }
+
+    _defaultDateFrom() {
+        const d = new Date();
+        d.setDate(d.getDate() - 30);
+        return d.toISOString().slice(0, 10);
     }
 }
 
+// Register as client action
 registry.category("actions").add("numo_marketing.marketing_dashboard", MarketingDashboard);

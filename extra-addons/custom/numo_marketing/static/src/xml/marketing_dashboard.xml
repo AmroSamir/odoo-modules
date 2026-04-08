@@ -1,264 +1,289 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates xml:space="preserve">
-    <t t-name="numo_marketing.MarketingDashboard">
-        <div class="o_action numo_mkt_dashboard">
-            <!-- Loading State -->
-            <t t-if="state.loading">
-                <div class="numo_mkt_loading">
-                    <div class="spinner-border text-primary" role="status"/>
-                    <p class="mt-3" t-esc="T('loading')"/>
-                </div>
-            </t>
 
-            <!-- Error State -->
-            <t t-if="!state.loading and state.error">
-                <div class="numo_mkt_loading">
-                    <i class="fa fa-exclamation-triangle fa-3x text-danger"/>
-                    <p class="mt-3 text-danger" t-esc="state.error"/>
-                    <button class="btn btn-sm btn-primary mt-2" t-on-click="onResetFilters">Retry</button>
-                </div>
-            </t>
+<t t-name="numo_marketing.MarketingDashboard">
+    <div class="numo_dashboard">
 
-            <t t-if="!state.loading and state.data and !state.error">
-                <!-- Header -->
-                <div class="numo_mkt_header">
-                    <h2 class="numo_mkt_title" t-esc="T('title')"/>
-                    <button class="btn btn-sm btn-outline-primary" t-on-click="openSpendList">
-                        <i class="fa fa-list me-1"/>
-                        <t t-esc="T('total_spend')"/>
-                    </button>
-                </div>
+        <!-- ============================================================ -->
+        <!-- Header Bar -->
+        <!-- ============================================================ -->
+        <div class="numo_header">
+            <h1 class="numo_title"><t t-esc="T('title')"/></h1>
+            <div class="numo_template_tabs">
+                <button t-attf-class="numo_tab #{state.activeTemplate === 'all' ? 'active' : ''}"
+                        t-on-click="() => this.setTemplate('all')">All</button>
+                <button t-attf-class="numo_tab #{state.activeTemplate === 'executive' ? 'active' : ''}"
+                        t-on-click="() => this.setTemplate('executive')">Executive</button>
+                <button t-attf-class="numo_tab #{state.activeTemplate === 'channel' ? 'active' : ''}"
+                        t-on-click="() => this.setTemplate('channel')">Channel</button>
+                <button t-attf-class="numo_tab #{state.activeTemplate === 'project_roi' ? 'active' : ''}"
+                        t-on-click="() => this.setTemplate('project_roi')">Project ROI</button>
+                <button t-attf-class="numo_tab #{state.activeTemplate === 'funnel' ? 'active' : ''}"
+                        t-on-click="() => this.setTemplate('funnel')">Funnel</button>
+            </div>
+        </div>
 
-                <!-- Filters Bar -->
-                <div class="numo_mkt_filters">
-                    <div class="numo_mkt_filter_group">
-                        <label t-esc="T('date_from')"/>
-                        <input type="date" class="form-control form-control-sm"
-                               t-att-value="state.filters.date_from"
-                               t-on-change="onDateFromChange"/>
-                    </div>
-                    <div class="numo_mkt_filter_group">
-                        <label t-esc="T('date_to')"/>
-                        <input type="date" class="form-control form-control-sm"
-                               t-att-value="state.filters.date_to"
-                               t-on-change="onDateToChange"/>
-                    </div>
-                    <div class="numo_mkt_filter_group">
-                        <label t-esc="T('platform')"/>
-                        <select class="form-select form-select-sm"
-                                t-on-change="onPlatformChange">
-                            <option value="" t-esc="T('all')"/>
-                            <t t-foreach="state.data.filter_options.platforms" t-as="opt" t-key="opt.value">
-                                <option t-att-value="opt.value"
-                                        t-att-selected="state.filters.platform === opt.value"
-                                        t-esc="opt.label"/>
-                            </t>
-                        </select>
-                    </div>
-                    <div class="numo_mkt_filter_group">
-                        <label t-esc="T('project')"/>
-                        <select class="form-select form-select-sm"
-                                t-on-change="onProjectChange">
-                            <option value="" t-esc="T('all')"/>
-                            <t t-foreach="state.data.filter_options.projects" t-as="opt" t-key="opt.value">
-                                <option t-att-value="opt.value"
-                                        t-att-selected="'' + state.filters.project_id === '' + opt.value"
-                                        t-esc="opt.label"/>
-                            </t>
-                        </select>
-                    </div>
-                    <div class="numo_mkt_filter_group">
-                        <label t-esc="T('campaign')"/>
-                        <select class="form-select form-select-sm"
-                                t-on-change="onCampaignChange">
-                            <option value="" t-esc="T('all')"/>
-                            <t t-foreach="state.data.filter_options.campaigns" t-as="opt" t-key="opt.value">
-                                <option t-att-value="opt.value"
-                                        t-att-selected="'' + state.filters.campaign_id === '' + opt.value"
-                                        t-esc="opt.label"/>
-                            </t>
-                        </select>
-                    </div>
-                    <div class="numo_mkt_filter_actions">
-                        <button class="btn btn-sm btn-primary" t-on-click="onApplyFilters" t-esc="T('apply')"/>
-                        <button class="btn btn-sm btn-outline-secondary" t-on-click="onResetFilters" t-esc="T('reset')"/>
-                    </div>
-                </div>
+        <!-- ============================================================ -->
+        <!-- Filter Bar -->
+        <!-- ============================================================ -->
+        <div class="numo_filter_bar">
+            <div class="numo_filter_group">
+                <label><t t-esc="T('date_from')"/></label>
+                <input type="date" t-att-value="state.filters.date_from"
+                       t-on-change="(ev) => this.onFilterChange('date_from', ev)"/>
+            </div>
+            <div class="numo_filter_group">
+                <label><t t-esc="T('date_to')"/></label>
+                <input type="date" t-att-value="state.filters.date_to"
+                       t-on-change="(ev) => this.onFilterChange('date_to', ev)"/>
+            </div>
+            <div class="numo_filter_group">
+                <label><t t-esc="T('platform')"/></label>
+                <select t-on-change="(ev) => this.onFilterChange('platform', ev)">
+                    <option value=""><t t-esc="T('all')"/></option>
+                    <t t-foreach="state.data?.filter_options?.platforms || []" t-as="p" t-key="p.value">
+                        <option t-att-value="p.value" t-att-selected="state.filters.platform === p.value">
+                            <t t-esc="p.label"/>
+                        </option>
+                    </t>
+                </select>
+            </div>
+            <div class="numo_filter_group">
+                <label><t t-esc="T('project')"/></label>
+                <select t-on-change="(ev) => this.onFilterChange('project_id', ev)">
+                    <option value=""><t t-esc="T('all')"/></option>
+                    <t t-foreach="state.data?.filter_options?.projects || []" t-as="p" t-key="p.value">
+                        <option t-att-value="p.value" t-att-selected="state.filters.project_id === p.value">
+                            <t t-esc="p.label"/>
+                        </option>
+                    </t>
+                </select>
+            </div>
+            <div class="numo_filter_group numo_filter_compare">
+                <label>
+                    <input type="checkbox" t-att-checked="state.filters.compare"
+                           t-on-change="(ev) => this.onCompareToggle(ev)"/>
+                    <t t-esc="T('compare')"/>
+                </label>
+            </div>
+            <div class="numo_filter_actions">
+                <button class="numo_btn numo_btn_primary" t-on-click="applyFilters">
+                    <t t-esc="T('apply')"/>
+                </button>
+                <button class="numo_btn numo_btn_secondary" t-on-click="resetFilters">
+                    <t t-esc="T('reset')"/>
+                </button>
+            </div>
+        </div>
 
-                <!-- KPI Cards -->
-                <div class="numo_mkt_kpi_grid">
-                    <!-- Spend -->
-                    <div class="numo_mkt_kpi_card numo_kpi_spend">
-                        <div class="numo_kpi_icon"><i class="fa fa-money"/></div>
-                        <div class="numo_kpi_content">
-                            <div class="numo_kpi_value" t-esc="formatCurrency(state.data.kpis.total_spend)"/>
-                            <div class="numo_kpi_label" t-esc="T('total_spend')"/>
-                        </div>
-                        <div class="numo_kpi_unit" t-esc="T('sar')"/>
-                    </div>
-                    <!-- Revenue -->
-                    <div class="numo_mkt_kpi_card numo_kpi_revenue">
-                        <div class="numo_kpi_icon"><i class="fa fa-line-chart"/></div>
-                        <div class="numo_kpi_content">
-                            <div class="numo_kpi_value" t-esc="formatCurrency(state.data.kpis.total_revenue)"/>
-                            <div class="numo_kpi_label" t-esc="T('total_revenue')"/>
-                        </div>
-                        <div class="numo_kpi_unit" t-esc="T('sar')"/>
-                    </div>
-                    <!-- Profit -->
-                    <div class="numo_mkt_kpi_card numo_kpi_profit">
-                        <div class="numo_kpi_icon"><i class="fa fa-trophy"/></div>
-                        <div class="numo_kpi_content">
-                            <div class="numo_kpi_value" t-esc="formatCurrency(state.data.kpis.profit)"/>
-                            <div class="numo_kpi_label" t-esc="T('profit')"/>
-                        </div>
-                        <div class="numo_kpi_unit" t-esc="T('sar')"/>
-                    </div>
-                    <!-- ROAS -->
-                    <div class="numo_mkt_kpi_card numo_kpi_roas">
-                        <div class="numo_kpi_icon"><i class="fa fa-refresh"/></div>
-                        <div class="numo_kpi_content">
-                            <div class="numo_kpi_value" t-esc="formatNumber(state.data.kpis.roas)"/>
-                            <div class="numo_kpi_label" t-esc="T('roas')"/>
-                        </div>
-                        <div class="numo_kpi_unit">x</div>
-                    </div>
-                    <!-- Leads -->
-                    <div class="numo_mkt_kpi_card numo_kpi_leads">
-                        <div class="numo_kpi_icon"><i class="fa fa-users"/></div>
-                        <div class="numo_kpi_content">
-                            <div class="numo_kpi_value" t-esc="formatNumber(state.data.kpis.total_leads)"/>
-                            <div class="numo_kpi_label" t-esc="T('total_leads')"/>
-                        </div>
-                    </div>
-                    <!-- Won -->
-                    <div class="numo_mkt_kpi_card numo_kpi_won">
-                        <div class="numo_kpi_icon"><i class="fa fa-check-circle"/></div>
-                        <div class="numo_kpi_content">
-                            <div class="numo_kpi_value" t-esc="formatNumber(state.data.kpis.total_won)"/>
-                            <div class="numo_kpi_label" t-esc="T('total_won')"/>
-                        </div>
-                    </div>
-                    <!-- CPL -->
-                    <div class="numo_mkt_kpi_card numo_kpi_cpl">
-                        <div class="numo_kpi_icon"><i class="fa fa-tag"/></div>
-                        <div class="numo_kpi_content">
-                            <div class="numo_kpi_value" t-esc="formatCurrency(state.data.kpis.cpl)"/>
-                            <div class="numo_kpi_label" t-esc="T('cpl')"/>
-                        </div>
-                        <div class="numo_kpi_unit" t-esc="T('sar')"/>
-                    </div>
-                    <!-- Lead to Sale -->
-                    <div class="numo_mkt_kpi_card numo_kpi_l2s">
-                        <div class="numo_kpi_icon"><i class="fa fa-exchange"/></div>
-                        <div class="numo_kpi_content">
-                            <div class="numo_kpi_value" t-esc="formatPercent(state.data.kpis.lead_to_sale)"/>
-                            <div class="numo_kpi_label" t-esc="T('lead_to_sale')"/>
-                        </div>
-                    </div>
-                </div>
+        <!-- ============================================================ -->
+        <!-- Loading State -->
+        <!-- ============================================================ -->
+        <div t-if="state.loading" class="numo_loading">
+            <div class="numo_spinner"/>
+            <span><t t-esc="T('loading')"/></span>
+        </div>
 
-                <!-- Secondary KPIs Row -->
-                <div class="numo_mkt_kpi_secondary">
-                    <div class="numo_mkt_kpi_mini">
-                        <span class="numo_mini_label" t-esc="T('impressions')"/>
-                        <span class="numo_mini_value" t-esc="formatNumber(state.data.kpis.total_impressions)"/>
+        <!-- ============================================================ -->
+        <!-- No Data State -->
+        <!-- ============================================================ -->
+        <div t-elif="!state.data || !kpis.total_spend" class="numo_empty">
+            <i class="fa fa-bar-chart fa-3x"/>
+            <p><t t-esc="T('no_data')"/></p>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- Dashboard Content -->
+        <!-- ============================================================ -->
+        <div t-else="" class="numo_content">
+
+            <!-- KPI Cards Row 1: Primary metrics -->
+            <div class="numo_kpi_grid">
+                <t t-call="numo_marketing.KpiCard">
+                    <t t-set="kpiKey" t-value="'total_spend'"/>
+                    <t t-set="kpiLabel" t-value="T('total_spend')"/>
+                    <t t-set="kpiValue" t-value="fmt(kpis.total_spend, 'currency')"/>
+                    <t t-set="kpiIcon" t-value="'fa-money'"/>
+                    <t t-set="kpiColor" t-value="'indigo'"/>
+                </t>
+                <t t-call="numo_marketing.KpiCard">
+                    <t t-set="kpiKey" t-value="'total_revenue'"/>
+                    <t t-set="kpiLabel" t-value="T('total_revenue')"/>
+                    <t t-set="kpiValue" t-value="fmt(kpis.total_revenue, 'currency')"/>
+                    <t t-set="kpiIcon" t-value="'fa-line-chart'"/>
+                    <t t-set="kpiColor" t-value="'emerald'"/>
+                </t>
+                <t t-call="numo_marketing.KpiCard">
+                    <t t-set="kpiKey" t-value="'profit'"/>
+                    <t t-set="kpiLabel" t-value="T('profit')"/>
+                    <t t-set="kpiValue" t-value="fmt(kpis.profit, 'currency')"/>
+                    <t t-set="kpiIcon" t-value="'fa-trophy'"/>
+                    <t t-set="kpiColor" t-value="kpis.profit >= 0 ? 'emerald' : 'red'"/>
+                </t>
+                <t t-call="numo_marketing.KpiCard">
+                    <t t-set="kpiKey" t-value="'roas'"/>
+                    <t t-set="kpiLabel" t-value="T('roas')"/>
+                    <t t-set="kpiValue" t-value="fmt(kpis.roas, 'ratio')"/>
+                    <t t-set="kpiIcon" t-value="'fa-refresh'"/>
+                    <t t-set="kpiColor" t-value="kpis.roas >= 2 ? 'emerald' : (kpis.roas >= 1 ? 'amber' : 'red')"/>
+                </t>
+            </div>
+
+            <!-- KPI Cards Row 2: Secondary metrics -->
+            <div class="numo_kpi_grid numo_kpi_secondary">
+                <t t-call="numo_marketing.KpiCard">
+                    <t t-set="kpiKey" t-value="'total_leads'"/>
+                    <t t-set="kpiLabel" t-value="T('total_leads')"/>
+                    <t t-set="kpiValue" t-value="fmt(kpis.total_leads, 'compact')"/>
+                    <t t-set="kpiIcon" t-value="'fa-users'"/>
+                    <t t-set="kpiColor" t-value="'violet'"/>
+                </t>
+                <t t-call="numo_marketing.KpiCard">
+                    <t t-set="kpiKey" t-value="'total_won'"/>
+                    <t t-set="kpiLabel" t-value="T('total_won')"/>
+                    <t t-set="kpiValue" t-value="fmt(kpis.total_won, 'compact')"/>
+                    <t t-set="kpiIcon" t-value="'fa-check-circle'"/>
+                    <t t-set="kpiColor" t-value="'emerald'"/>
+                </t>
+                <t t-call="numo_marketing.KpiCard">
+                    <t t-set="kpiKey" t-value="'cpl'"/>
+                    <t t-set="kpiLabel" t-value="T('cpl')"/>
+                    <t t-set="kpiValue" t-value="fmt(kpis.cpl, 'currency')"/>
+                    <t t-set="kpiIcon" t-value="'fa-tag'"/>
+                    <t t-set="kpiColor" t-value="'amber'"/>
+                </t>
+                <t t-call="numo_marketing.KpiCard">
+                    <t t-set="kpiKey" t-value="'ctr'"/>
+                    <t t-set="kpiLabel" t-value="T('ctr')"/>
+                    <t t-set="kpiValue" t-value="fmt(kpis.ctr, 'percent')"/>
+                    <t t-set="kpiIcon" t-value="'fa-mouse-pointer'"/>
+                    <t t-set="kpiColor" t-value="'cyan'"/>
+                </t>
+                <t t-call="numo_marketing.KpiCard">
+                    <t t-set="kpiKey" t-value="'lead_to_sale'"/>
+                    <t t-set="kpiLabel" t-value="T('lead_to_sale')"/>
+                    <t t-set="kpiValue" t-value="fmt(kpis.lead_to_sale, 'percent')"/>
+                    <t t-set="kpiIcon" t-value="'fa-exchange'"/>
+                    <t t-set="kpiColor" t-value="'pink'"/>
+                </t>
+            </div>
+
+            <!-- Charts Grid -->
+            <div class="numo_charts_grid">
+                <!-- Spend vs Revenue Trend -->
+                <div class="numo_card numo_card_wide">
+                    <div class="numo_card_header">
+                        <h3><t t-esc="T('spend_vs_revenue')"/></h3>
                     </div>
-                    <div class="numo_mkt_kpi_mini">
-                        <span class="numo_mini_label" t-esc="T('clicks')"/>
-                        <span class="numo_mini_value" t-esc="formatNumber(state.data.kpis.total_clicks)"/>
-                    </div>
-                    <div class="numo_mkt_kpi_mini">
-                        <span class="numo_mini_label" t-esc="T('ctr')"/>
-                        <span class="numo_mini_value" t-esc="formatPercent(state.data.kpis.ctr)"/>
-                    </div>
-                    <div class="numo_mkt_kpi_mini">
-                        <span class="numo_mini_label" t-esc="T('cpa')"/>
-                        <span class="numo_mini_value"><t t-esc="formatCurrency(state.data.kpis.cpa)"/> <small t-esc="T('sar')"/></span>
-                    </div>
-                    <div class="numo_mkt_kpi_mini">
-                        <span class="numo_mini_label" t-esc="T('conversion_rate')"/>
-                        <span class="numo_mini_value" t-esc="formatPercent(state.data.kpis.conversion_rate)"/>
-                    </div>
-                    <div class="numo_mkt_kpi_mini">
-                        <span class="numo_mini_label" t-esc="T('qualified')"/>
-                        <span class="numo_mini_value" t-esc="formatNumber(state.data.kpis.total_qualified)"/>
-                    </div>
-                    <div class="numo_mkt_kpi_mini">
-                        <span class="numo_mini_label" t-esc="T('lost')"/>
-                        <span class="numo_mini_value" t-esc="formatNumber(state.data.kpis.total_lost)"/>
+                    <div class="numo_chart_container">
+                        <canvas t-ref="trendChart"/>
                     </div>
                 </div>
 
-                <!-- Charts Row -->
-                <div class="numo_mkt_charts_row">
-                    <div class="numo_mkt_chart_card numo_chart_wide">
-                        <canvas t-ref="spendRevenueChart"/>
+                <!-- Platform Breakdown -->
+                <div class="numo_card">
+                    <div class="numo_card_header">
+                        <h3><t t-esc="T('platform_spend')"/></h3>
                     </div>
-                    <div class="numo_mkt_chart_card numo_chart_narrow">
+                    <div class="numo_chart_container numo_chart_doughnut">
                         <canvas t-ref="platformChart"/>
                     </div>
                 </div>
 
-                <!-- Project Chart -->
-                <div class="numo_mkt_charts_row">
-                    <div class="numo_mkt_chart_card numo_chart_full">
-                        <canvas t-ref="projectChart"/>
+                <!-- Channel Contribution -->
+                <div class="numo_card">
+                    <div class="numo_card_header">
+                        <h3><t t-esc="T('channel_contribution')"/></h3>
+                    </div>
+                    <div class="numo_chart_container">
+                        <canvas t-ref="contributionChart"/>
                     </div>
                 </div>
 
-                <!-- Top Campaigns Table -->
-                <div class="numo_mkt_table_card">
-                    <h4 t-esc="T('top_campaigns')"/>
-                    <t t-if="state.data.top_campaigns.length === 0">
-                        <p class="text-muted" t-esc="T('no_data')"/>
-                    </t>
-                    <t t-if="state.data.top_campaigns.length > 0">
-                        <div class="table-responsive">
-                            <table class="table table-sm table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th t-esc="T('name')"/>
-                                        <th t-esc="T('platform')"/>
-                                        <th t-esc="T('project')"/>
-                                        <th class="text-end" t-esc="T('spend')"/>
-                                        <th class="text-end" t-esc="T('leads')"/>
-                                        <th class="text-end" t-esc="T('won')"/>
-                                        <th class="text-end" t-esc="T('revenue')"/>
-                                        <th class="text-end" t-esc="T('cpl')"/>
-                                        <th class="text-end" t-esc="T('roas')"/>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <t t-foreach="state.data.top_campaigns" t-as="c" t-key="c.id">
-                                        <tr>
-                                            <td t-esc="c_index + 1"/>
-                                            <td t-esc="c.name"/>
-                                            <td t-esc="c.platform"/>
-                                            <td t-esc="c.project"/>
-                                            <td class="text-end"><t t-esc="formatCurrency(c.spend)"/></td>
-                                            <td class="text-end" t-esc="c.leads"/>
-                                            <td class="text-end" t-esc="c.won"/>
-                                            <td class="text-end"><t t-esc="formatCurrency(c.revenue)"/></td>
-                                            <td class="text-end"><t t-esc="formatCurrency(c.cpl)"/></td>
-                                            <td class="text-end" t-esc="c.roas"/>
-                                        </tr>
-                                    </t>
-                                </tbody>
-                            </table>
-                        </div>
-                    </t>
+                <!-- Project Performance -->
+                <div class="numo_card numo_card_wide">
+                    <div class="numo_card_header">
+                        <h3><t t-esc="T('project_performance')"/></h3>
+                    </div>
+                    <div class="numo_chart_container">
+                        <canvas t-ref="projectChart"/>
+                    </div>
                 </div>
-            </t>
+            </div>
 
-            <!-- No Data State -->
-            <t t-if="!state.loading and !state.data and !state.error">
-                <div class="numo_mkt_loading">
-                    <i class="fa fa-bar-chart fa-3x text-muted"/>
-                    <p class="mt-3 text-muted" t-esc="T('no_data')"/>
+            <!-- Funnel -->
+            <div class="numo_card numo_card_full">
+                <div class="numo_card_header">
+                    <h3><t t-esc="T('funnel')"/></h3>
                 </div>
-            </t>
+                <div t-ref="funnelContainer" class="numo_funnel_wrapper"/>
+            </div>
+
+            <!-- Top Campaigns Table -->
+            <div class="numo_card numo_card_full">
+                <div class="numo_card_header">
+                    <h3><t t-esc="T('top_campaigns')"/></h3>
+                </div>
+                <div class="numo_table_wrapper">
+                    <table class="numo_table">
+                        <thead>
+                            <tr>
+                                <th><t t-esc="T('name')"/></th>
+                                <th><t t-esc="T('platform')"/></th>
+                                <th><t t-esc="T('project')"/></th>
+                                <th class="numo_num"><t t-esc="T('spend')"/></th>
+                                <th class="numo_num"><t t-esc="T('revenue')"/></th>
+                                <th class="numo_num"><t t-esc="T('leads')"/></th>
+                                <th class="numo_num"><t t-esc="T('ctr')"/></th>
+                                <th class="numo_num"><t t-esc="T('cpl')"/></th>
+                                <th class="numo_num"><t t-esc="T('roas')"/></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="state.data?.top_campaigns || []" t-as="camp" t-key="camp.id">
+                                <tr>
+                                    <td class="numo_campaign_name"><t t-esc="camp.name"/></td>
+                                    <td><span class="numo_platform_badge"><t t-esc="camp.platform"/></span></td>
+                                    <td><t t-esc="camp.project || '—'"/></td>
+                                    <td class="numo_num"><t t-esc="fmt(camp.spend, 'currency')"/></td>
+                                    <td class="numo_num"><t t-esc="fmt(camp.revenue, 'currency')"/></td>
+                                    <td class="numo_num"><t t-esc="camp.leads"/></td>
+                                    <td class="numo_num"><t t-esc="fmt(camp.ctr, 'percent')"/></td>
+                                    <td class="numo_num"><t t-esc="fmt(camp.cpl, 'currency')"/></td>
+                                    <td class="numo_num">
+                                        <span t-attf-class="numo_roas_badge #{camp.roas >= 2 ? 'good' : (camp.roas >= 1 ? 'ok' : 'bad')}">
+                                            <t t-esc="fmt(camp.roas, 'ratio')"/>
+                                        </span>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
         </div>
-    </t>
+    </div>
+</t>
+
+<!-- ============================================================ -->
+<!-- KPI Card Sub-template -->
+<!-- ============================================================ -->
+<t t-name="numo_marketing.KpiCard">
+    <div t-attf-class="numo_kpi_card numo_kpi_#{kpiColor}">
+        <div class="numo_kpi_icon">
+            <i t-attf-class="fa #{kpiIcon}"/>
+        </div>
+        <div class="numo_kpi_body">
+            <span class="numo_kpi_label"><t t-esc="kpiLabel"/></span>
+            <span class="numo_kpi_value"><t t-esc="kpiValue"/></span>
+            <div t-if="hasComparison and comparison[kpiKey]"
+                 t-attf-class="numo_kpi_delta #{deltaClass(kpiKey)}">
+                <span class="numo_delta_icon"><t t-esc="deltaIcon(kpiKey)"/></span>
+                <span class="numo_delta_pct"><t t-esc="deltaPct(kpiKey)"/></span>
+            </div>
+        </div>
+    </div>
+</t>
+
 </templates>

@@ -1,76 +1,43 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<odoo>
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
 
-    <!-- Daily CRM Metrics Update -->
+    <!-- Sync all ad accounts (daily at 03:00 AM) -->
+    <record id="cron_sync_all_accounts" model="ir.cron">
+        <field name="name">Marketing: Sync All Ad Accounts</field>
+        <field name="model_id" ref="model_numo_marketing_account"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_sync_all_accounts()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field name="active" eval="False"/>
+        <field name="priority">10</field>
+    </record>
+
+    <!-- Update CRM metrics on metrics (daily at 05:00 AM) -->
     <record id="cron_update_crm_metrics" model="ir.cron">
         <field name="name">Marketing: Update CRM Metrics</field>
-        <field name="model_id" ref="model_numo_campaign_spend"/>
+        <field name="model_id" ref="model_numo_marketing_metric"/>
         <field name="state">code</field>
         <field name="code">model._cron_update_crm_metrics()</field>
         <field name="interval_number">1</field>
         <field name="interval_type">days</field>
-
-        <field name="active">True</field>
+        <field name="numbercall">-1</field>
+        <field name="active" eval="True"/>
+        <field name="priority">20</field>
     </record>
 
-    <!-- Google Ads Daily Sync (3:00 AM) -->
-    <record id="cron_sync_google_ads" model="ir.cron">
-        <field name="name">Marketing: Sync Google Ads</field>
-        <field name="model_id" ref="model_numo_campaign_spend"/>
+    <!-- Send scheduled reports (daily at 07:00 AM) -->
+    <record id="cron_send_scheduled_reports" model="ir.cron">
+        <field name="name">Marketing: Send Scheduled Reports</field>
+        <field name="model_id" ref="model_numo_marketing_report"/>
         <field name="state">code</field>
-        <field name="code">model._cron_sync_google_ads()</field>
+        <field name="code">model._cron_send_scheduled_reports()</field>
         <field name="interval_number">1</field>
         <field name="interval_type">days</field>
-
-        <field name="active">False</field>
-    </record>
-
-    <!-- Meta Ads Daily Sync (3:10 AM) -->
-    <record id="cron_sync_meta" model="ir.cron">
-        <field name="name">Marketing: Sync Meta Ads</field>
-        <field name="model_id" ref="model_numo_campaign_spend"/>
-        <field name="state">code</field>
-        <field name="code">model._cron_sync_meta()</field>
-        <field name="interval_number">1</field>
-        <field name="interval_type">days</field>
-
-        <field name="active">False</field>
-    </record>
-
-    <!-- TikTok Ads Daily Sync (3:20 AM) -->
-    <record id="cron_sync_tiktok" model="ir.cron">
-        <field name="name">Marketing: Sync TikTok Ads</field>
-        <field name="model_id" ref="model_numo_campaign_spend"/>
-        <field name="state">code</field>
-        <field name="code">model._cron_sync_tiktok()</field>
-        <field name="interval_number">1</field>
-        <field name="interval_type">days</field>
-
-        <field name="active">False</field>
-    </record>
-
-    <!-- Snapchat Ads Daily Sync (3:30 AM) -->
-    <record id="cron_sync_snapchat" model="ir.cron">
-        <field name="name">Marketing: Sync Snapchat Ads</field>
-        <field name="model_id" ref="model_numo_campaign_spend"/>
-        <field name="state">code</field>
-        <field name="code">model._cron_sync_snapchat()</field>
-        <field name="interval_number">1</field>
-        <field name="interval_type">days</field>
-
-        <field name="active">False</field>
-    </record>
-
-    <!-- X (Twitter) Ads Daily Sync (3:40 AM) -->
-    <record id="cron_sync_x_ads" model="ir.cron">
-        <field name="name">Marketing: Sync X Ads</field>
-        <field name="model_id" ref="model_numo_campaign_spend"/>
-        <field name="state">code</field>
-        <field name="code">model._cron_sync_x_ads()</field>
-        <field name="interval_number">1</field>
-        <field name="interval_type">days</field>
-
-        <field name="active">False</field>
+        <field name="numbercall">-1</field>
+        <field name="active" eval="False"/>
+        <field name="priority">30</field>
     </record>
 
 </odoo>

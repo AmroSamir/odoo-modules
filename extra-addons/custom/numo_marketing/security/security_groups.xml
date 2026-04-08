@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="module_category_marketing_analytics" model="ir.module.category">
+        <field name="name">Marketing Analytics</field>
+        <field name="sequence">30</field>
+    </record>
+
+    <record id="group_marketing_team" model="res.groups">
+        <field name="name">Marketing Team Member</field>
+        <field name="category_id" ref="module_category_marketing_analytics"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        <field name="comment">Can view marketing dashboards and their own campaigns.</field>
+    </record>
+
+    <record id="group_marketing_manager" model="res.groups">
+        <field name="name">Marketing Manager</field>
+        <field name="category_id" ref="module_category_marketing_analytics"/>
+        <field name="implied_ids" eval="[(4, ref('numo_marketing.group_marketing_team'))]"/>
+        <field name="comment">Full access to all marketing analytics, accounts, reports, and settings.</field>
+    </record>
+</odoo>

@@ -1,247 +1,572 @@
-/* ==========================================================================
-   Numo Marketing Dashboard — Odoo CSS Variables (dark mode + RTL safe)
-   ========================================================================== */
+/* ============================================================
+   Numo Marketing Analytics Dashboard
+   Whatagraph/AdReport.io inspired design
+   ============================================================ */
 
-.numo_mkt_dashboard {
-    padding: 16px 24px;
-    background: var(--o-webclient-background-color);
-    color: var(--o-main-text-color);
-    min-height: 100%;
+/* --- Root Variables --- */
+.numo_dashboard {
+    --numo-bg: #f8fafc;
+    --numo-card-bg: #ffffff;
+    --numo-border: #e2e8f0;
+    --numo-text: #1e293b;
+    --numo-text-secondary: #64748b;
+    --numo-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    --numo-shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --numo-radius: 12px;
+    --numo-radius-sm: 8px;
+    --numo-indigo: #6366F1;
+    --numo-emerald: #10B981;
+    --numo-amber: #F59E0B;
+    --numo-red: #EF4444;
+    --numo-violet: #8B5CF6;
+    --numo-cyan: #06B6D4;
+    --numo-pink: #EC4899;
 }
 
-/* ---------- Loading ---------- */
-.numo_mkt_loading {
+/* Dark mode support */
+.o_dark .numo_dashboard {
+    --numo-bg: #0f172a;
+    --numo-card-bg: #1e293b;
+    --numo-border: #334155;
+    --numo-text: #f1f5f9;
+    --numo-text-secondary: #94a3b8;
+    --numo-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    --numo-shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* --- Dashboard Container --- */
+.numo_dashboard {
+    background: var(--numo-bg);
+    min-height: 100vh;
+    padding: 24px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: var(--numo-text);
+}
+
+/* --- Header --- */
+.numo_header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.numo_title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--numo-text);
+    margin: 0;
+}
+
+/* --- Template Tabs --- */
+.numo_template_tabs {
+    display: flex;
+    gap: 4px;
+    background: var(--numo-card-bg);
+    border-radius: 10px;
+    padding: 4px;
+    box-shadow: var(--numo-shadow);
+}
+
+.numo_tab {
+    padding: 8px 16px;
+    border: none;
+    background: transparent;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--numo-text-secondary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.numo_tab:hover {
+    color: var(--numo-text);
+    background: rgba(99, 102, 241, 0.08);
+}
+
+.numo_tab.active {
+    background: var(--numo-indigo);
+    color: white;
+    box-shadow: 0 2px 4px rgba(99, 102, 241, 0.3);
+}
+
+/* --- Filter Bar --- */
+.numo_filter_bar {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+    background: var(--numo-card-bg);
+    padding: 16px 20px;
+    border-radius: var(--numo-radius);
+    box-shadow: var(--numo-shadow);
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+}
+
+.numo_filter_group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.numo_filter_group label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--numo-text-secondary);
+}
+
+.numo_filter_group input[type="date"],
+.numo_filter_group select {
+    padding: 8px 12px;
+    border: 1px solid var(--numo-border);
+    border-radius: var(--numo-radius-sm);
+    font-size: 13px;
+    background: var(--numo-card-bg);
+    color: var(--numo-text);
+    min-width: 140px;
+    transition: border-color 0.2s;
+}
+
+.numo_filter_group input:focus,
+.numo_filter_group select:focus {
+    outline: none;
+    border-color: var(--numo-indigo);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.numo_filter_compare {
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+    align-self: center;
+}
+
+.numo_filter_compare label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    text-transform: none;
+    letter-spacing: normal;
+    cursor: pointer;
+}
+
+.numo_filter_compare input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--numo-indigo);
+}
+
+.numo_filter_actions {
+    display: flex;
+    gap: 8px;
+    margin-inline-start: auto;
+}
+
+.numo_btn {
+    padding: 8px 20px;
+    border: none;
+    border-radius: var(--numo-radius-sm);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.numo_btn_primary {
+    background: var(--numo-indigo);
+    color: white;
+}
+
+.numo_btn_primary:hover {
+    background: #4f46e5;
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+}
+
+.numo_btn_secondary {
+    background: transparent;
+    color: var(--numo-text-secondary);
+    border: 1px solid var(--numo-border);
+}
+
+.numo_btn_secondary:hover {
+    background: rgba(0, 0, 0, 0.04);
+}
+
+/* --- Loading / Empty --- */
+.numo_loading, .numo_empty {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 80px 0;
+    padding: 80px 20px;
+    color: var(--numo-text-secondary);
+    gap: 16px;
 }
 
-/* ---------- Header ---------- */
-.numo_mkt_header {
+.numo_spinner {
+    width: 36px;
+    height: 36px;
+    border: 3px solid var(--numo-border);
+    border-top-color: var(--numo-indigo);
+    border-radius: 50%;
+    animation: numo_spin 0.8s linear infinite;
+}
+
+@keyframes numo_spin {
+    to { transform: rotate(360deg); }
+}
+
+/* --- KPI Cards Grid --- */
+.numo_kpi_grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.numo_kpi_secondary .numo_kpi_card {
+    padding: 16px 20px;
+}
+
+.numo_kpi_secondary .numo_kpi_value {
+    font-size: 22px;
+}
+
+/* --- KPI Card --- */
+.numo_kpi_card {
+    background: var(--numo-card-bg);
+    border-radius: var(--numo-radius);
+    padding: 20px 24px;
+    box-shadow: var(--numo-shadow);
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    transition: box-shadow 0.2s, transform 0.2s;
+    border-inline-start: 4px solid transparent;
+}
+
+.numo_kpi_card:hover {
+    box-shadow: var(--numo-shadow-hover);
+    transform: translateY(-1px);
+}
+
+/* Color variants */
+.numo_kpi_indigo { border-inline-start-color: var(--numo-indigo); }
+.numo_kpi_emerald { border-inline-start-color: var(--numo-emerald); }
+.numo_kpi_amber { border-inline-start-color: var(--numo-amber); }
+.numo_kpi_red { border-inline-start-color: var(--numo-red); }
+.numo_kpi_violet { border-inline-start-color: var(--numo-violet); }
+.numo_kpi_cyan { border-inline-start-color: var(--numo-cyan); }
+.numo_kpi_pink { border-inline-start-color: var(--numo-pink); }
+
+.numo_kpi_icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    margin-bottom: 16px;
-}
-.numo_mkt_title {
-    margin: 0;
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--o-main-text-color);
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
 }
 
-/* ---------- Filters ---------- */
-.numo_mkt_filters {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    align-items: flex-end;
-    padding: 12px 16px;
-    margin-bottom: 20px;
-    background: var(--o-view-background-color);
-    border: 1px solid var(--o-border-color);
-    border-radius: 8px;
-}
-.numo_mkt_filter_group {
+.numo_kpi_indigo .numo_kpi_icon { background: rgba(99,102,241,0.1); color: var(--numo-indigo); }
+.numo_kpi_emerald .numo_kpi_icon { background: rgba(16,185,129,0.1); color: var(--numo-emerald); }
+.numo_kpi_amber .numo_kpi_icon { background: rgba(245,158,11,0.1); color: var(--numo-amber); }
+.numo_kpi_red .numo_kpi_icon { background: rgba(239,68,68,0.1); color: var(--numo-red); }
+.numo_kpi_violet .numo_kpi_icon { background: rgba(139,92,246,0.1); color: var(--numo-violet); }
+.numo_kpi_cyan .numo_kpi_icon { background: rgba(6,182,212,0.1); color: var(--numo-cyan); }
+.numo_kpi_pink .numo_kpi_icon { background: rgba(236,72,153,0.1); color: var(--numo-pink); }
+
+.numo_kpi_body {
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    min-width: 140px;
-}
-.numo_mkt_filter_group label {
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: var(--o-main-text-color);
-    opacity: 0.7;
-}
-.numo_mkt_filter_group .form-control,
-.numo_mkt_filter_group .form-select {
-    background: var(--o-webclient-background-color);
-    color: var(--o-main-text-color);
-    border-color: var(--o-border-color);
-}
-.numo_mkt_filter_actions {
-    display: flex;
-    gap: 6px;
-    align-items: flex-end;
-    padding-bottom: 1px;
-}
-
-/* ---------- KPI Cards Grid ---------- */
-.numo_mkt_kpi_grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 12px;
-    margin-bottom: 16px;
-}
-.numo_mkt_kpi_card {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 16px;
-    background: var(--o-view-background-color);
-    border: 1px solid var(--o-border-color);
-    border-radius: 8px;
-    border-left: 4px solid var(--o-brand-primary, #714b67);
-    transition: box-shadow 0.15s ease;
-}
-.numo_mkt_kpi_card:hover {
-    box-shadow: 0 2px 8px var(--o-shadow-color, rgba(0, 0, 0, 0.1));
-}
-.numo_kpi_icon {
-    font-size: 1.5rem;
-    opacity: 0.6;
-}
-.numo_kpi_content {
-    flex: 1;
+    gap: 2px;
     min-width: 0;
 }
+
+.numo_kpi_label {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--numo-text-secondary);
+}
+
 .numo_kpi_value {
-    font-size: 1.4rem;
+    font-size: 28px;
     font-weight: 700;
     line-height: 1.2;
-    color: var(--o-main-text-color);
+    color: var(--numo-text);
 }
-.numo_kpi_label {
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    opacity: 0.7;
-}
-.numo_kpi_unit {
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    opacity: 0.5;
-    align-self: flex-start;
+
+/* --- Delta Badges --- */
+.numo_kpi_delta {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 20px;
+    width: fit-content;
     margin-top: 4px;
 }
 
-/* KPI color accents — custom properties for theme overridability */
-.numo_mkt_dashboard {
-    --numo-kpi-spend:   #ef4444;
-    --numo-kpi-revenue: #22c55e;
-    --numo-kpi-profit:  #f59e0b;
-    --numo-kpi-roas:    #8b5cf6;
-    --numo-kpi-leads:   #3b82f6;
-    --numo-kpi-won:     #10b981;
-    --numo-kpi-cpl:     #f97316;
-    --numo-kpi-l2s:     #06b6d4;
+.numo_delta_up {
+    background: rgba(16, 185, 129, 0.1);
+    color: #059669;
 }
-.numo_kpi_spend   { border-left-color: var(--numo-kpi-spend); }
-.numo_kpi_revenue { border-left-color: var(--numo-kpi-revenue); }
-.numo_kpi_profit  { border-left-color: var(--numo-kpi-profit); }
-.numo_kpi_roas    { border-left-color: var(--numo-kpi-roas); }
-.numo_kpi_leads   { border-left-color: var(--numo-kpi-leads); }
-.numo_kpi_won     { border-left-color: var(--numo-kpi-won); }
-.numo_kpi_cpl     { border-left-color: var(--numo-kpi-cpl); }
-.numo_kpi_l2s     { border-left-color: var(--numo-kpi-l2s); }
 
-.numo_kpi_spend .numo_kpi_icon   { color: var(--numo-kpi-spend); }
-.numo_kpi_revenue .numo_kpi_icon { color: var(--numo-kpi-revenue); }
-.numo_kpi_profit .numo_kpi_icon  { color: var(--numo-kpi-profit); }
-.numo_kpi_roas .numo_kpi_icon    { color: var(--numo-kpi-roas); }
-.numo_kpi_leads .numo_kpi_icon   { color: var(--numo-kpi-leads); }
-.numo_kpi_won .numo_kpi_icon     { color: var(--numo-kpi-won); }
-.numo_kpi_cpl .numo_kpi_icon     { color: var(--numo-kpi-cpl); }
-.numo_kpi_l2s .numo_kpi_icon     { color: var(--numo-kpi-l2s); }
+.numo_delta_down {
+    background: rgba(239, 68, 68, 0.1);
+    color: #DC2626;
+}
 
-/* ---------- Secondary KPIs ---------- */
-.numo_mkt_kpi_secondary {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
+.o_dark .numo_delta_up { background: rgba(16, 185, 129, 0.2); color: #34D399; }
+.o_dark .numo_delta_down { background: rgba(239, 68, 68, 0.2); color: #F87171; }
+
+/* --- Charts Grid --- */
+.numo_charts_grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+/* --- Cards --- */
+.numo_card {
+    background: var(--numo-card-bg);
+    border-radius: var(--numo-radius);
+    box-shadow: var(--numo-shadow);
+    padding: 24px;
+    transition: box-shadow 0.2s;
+}
+
+.numo_card:hover {
+    box-shadow: var(--numo-shadow-hover);
+}
+
+.numo_card_wide {
+    grid-column: span 2;
+}
+
+.numo_card_full {
+    margin-bottom: 24px;
+    background: var(--numo-card-bg);
+    border-radius: var(--numo-radius);
+    box-shadow: var(--numo-shadow);
+    padding: 24px;
+}
+
+.numo_card_header {
+    margin-bottom: 16px;
+}
+
+.numo_card_header h3 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--numo-text);
+    margin: 0;
+}
+
+.numo_chart_container {
+    position: relative;
+    height: 300px;
+}
+
+.numo_chart_doughnut {
+    height: 280px;
+    max-width: 280px;
+    margin: 0 auto;
+}
+
+/* --- Table --- */
+.numo_table_wrapper {
+    overflow-x: auto;
+}
+
+.numo_table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.numo_table thead th {
     padding: 12px 16px;
-    margin-bottom: 20px;
-    background: var(--o-view-background-color);
-    border: 1px solid var(--o-border-color);
-    border-radius: 8px;
+    text-align: start;
+    font-weight: 600;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--numo-text-secondary);
+    border-bottom: 2px solid var(--numo-border);
+    white-space: nowrap;
 }
-.numo_mkt_kpi_mini {
+
+.numo_table tbody td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--numo-border);
+    color: var(--numo-text);
+}
+
+.numo_table tbody tr:hover {
+    background: rgba(99, 102, 241, 0.04);
+}
+
+.numo_table .numo_num {
+    text-align: end;
+    font-variant-numeric: tabular-nums;
+}
+
+.numo_campaign_name {
+    font-weight: 500;
+    max-width: 250px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.numo_platform_badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    background: rgba(99, 102, 241, 0.08);
+    color: var(--numo-indigo);
+}
+
+.numo_roas_badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.numo_roas_badge.good { background: rgba(16,185,129,0.1); color: #059669; }
+.numo_roas_badge.ok { background: rgba(245,158,11,0.1); color: #D97706; }
+.numo_roas_badge.bad { background: rgba(239,68,68,0.1); color: #DC2626; }
+
+/* --- Funnel --- */
+.numo_funnel_wrapper {
+    padding: 8px 0;
+}
+
+.numo_funnel {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    min-width: 90px;
-}
-.numo_mini_label {
-    font-size: 0.65rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    opacity: 0.6;
-}
-.numo_mini_value {
-    font-size: 1.1rem;
-    font-weight: 600;
+    gap: 8px;
 }
 
-/* ---------- Charts ---------- */
-.numo_mkt_charts_row {
+.numo_funnel_stage {
     display: flex;
-    gap: 16px;
-    margin-bottom: 16px;
-}
-.numo_mkt_chart_card {
-    padding: 16px;
-    background: var(--o-view-background-color);
-    border: 1px solid var(--o-border-color);
-    border-radius: 8px;
-    min-height: 300px;
-    position: relative;
-}
-.numo_chart_wide {
-    flex: 2;
-}
-.numo_chart_narrow {
-    flex: 1;
-}
-.numo_chart_full {
-    flex: 1;
+    align-items: center;
+    gap: 12px;
 }
 
-/* ---------- Top Campaigns Table ---------- */
-.numo_mkt_table_card {
-    padding: 16px;
-    background: var(--o-view-background-color);
-    border: 1px solid var(--o-border-color);
-    border-radius: 8px;
-    margin-bottom: 16px;
+.numo_funnel_label {
+    width: 140px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    text-align: end;
 }
-.numo_mkt_table_card h4 {
-    margin-bottom: 12px;
-    font-size: 1rem;
+
+.numo_funnel_name {
+    font-size: 13px;
     font-weight: 600;
-}
-.numo_mkt_table_card .table {
-    color: var(--o-main-text-color);
-    margin-bottom: 0;
-}
-.numo_mkt_table_card .table thead th {
-    border-bottom-color: var(--o-border-color);
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    opacity: 0.7;
-}
-.numo_mkt_table_card .table td {
-    border-color: var(--o-border-color);
-    vertical-align: middle;
+    color: var(--numo-text);
 }
 
-/* ---------- Responsive ---------- */
-@media (max-width: 768px) {
-    .numo_mkt_kpi_grid {
-        grid-template-columns: repeat(2, 1fr);
+.numo_funnel_value {
+    font-size: 11px;
+    color: var(--numo-text-secondary);
+}
+
+.numo_funnel_bar_container {
+    flex: 1;
+    height: 36px;
+    background: rgba(0, 0, 0, 0.03);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.numo_funnel_bar {
+    height: 100%;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-inline-end: 12px;
+    transition: width 0.6s ease;
+}
+
+.numo_funnel_pct {
+    font-size: 12px;
+    font-weight: 700;
+    color: white;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.numo_funnel_drop {
+    width: 100px;
+    flex-shrink: 0;
+    font-size: 11px;
+    color: var(--numo-text-secondary);
+}
+
+/* --- Responsive --- */
+@media (max-width: 1024px) {
+    .numo_charts_grid {
+        grid-template-columns: 1fr;
     }
-    .numo_mkt_charts_row {
+    .numo_card_wide {
+        grid-column: span 1;
+    }
+    .numo_filter_bar {
         flex-direction: column;
+        align-items: stretch;
     }
-    .numo_mkt_filters {
-        flex-direction: column;
-    }
-    .numo_mkt_filter_group {
-        min-width: 100%;
+    .numo_filter_actions {
+        margin-inline-start: 0;
     }
 }
+
+@media (max-width: 640px) {
+    .numo_dashboard {
+        padding: 12px;
+    }
+    .numo_kpi_grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+    .numo_kpi_value {
+        font-size: 20px;
+    }
+    .numo_header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .numo_template_tabs {
+        overflow-x: auto;
+        width: 100%;
+    }
+    .numo_funnel_label {
+        width: 80px;
+    }
+    .numo_funnel_drop {
+        display: none;
+    }
+}
+
+/* --- RTL Support (using logical properties throughout) --- */
+/* All margin/padding already use -inline-start/-inline-end */
+/* text-align uses 'start'/'end' instead of 'left'/'right' */

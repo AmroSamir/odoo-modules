@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_manual_entry_wizard_form" model="ir.ui.view">
+        <field name="name">numo.marketing.manual.entry.form</field>
+        <field name="model">numo.marketing.manual.entry</field>
+        <field name="arch" type="xml">
+            <form string="Manual Data Entry">
+                <group>
+                    <group>
+                        <field name="campaign_id"/>
+                        <field name="date_from"/>
+                        <field name="date_to"/>
+                    </group>
+                    <group>
+                        <field name="impressions"/>
+                        <field name="clicks"/>
+                        <field name="spend"/>
+                        <field name="conversions"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_create_metrics"
+                            string="Create Metrics"
+                            type="object"
+                            class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary"
+                            special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_manual_entry_wizard" model="ir.actions.act_window">
+        <field name="name">Manual Data Entry</field>
+        <field name="res_model">numo.marketing.manual.entry</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+</odoo>

@@ -1,52 +1,83 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Top-level application menu -->
-    <menuitem id="menu_numo_marketing_root"
+    <!-- ============================================================ -->
+    <!-- Root App Menu -->
+    <!-- ============================================================ -->
+    <menuitem id="menu_marketing_analytics_root"
               name="Marketing Analytics"
               web_icon="numo_marketing,static/description/icon.png"
-              sequence="25"/>
+              sequence="45"/>
 
+    <!-- ============================================================ -->
     <!-- Dashboard -->
+    <!-- ============================================================ -->
     <menuitem id="menu_marketing_dashboard"
               name="Dashboard"
-              parent="menu_numo_marketing_root"
+              parent="menu_marketing_analytics_root"
               action="action_marketing_dashboard"
-              sequence="1"/>
-
-    <!-- Campaign Spend -->
-    <menuitem id="menu_campaign_spend"
-              name="Campaign Spend"
-              parent="menu_numo_marketing_root"
-              action="action_campaign_spend"
               sequence="10"/>
 
-    <!-- Manual Spend Entry -->
-    <menuitem id="menu_manual_spend_wizard"
-              name="Manual Spend Entry"
-              parent="menu_numo_marketing_root"
-              action="action_manual_spend_wizard"
-              groups="sales_team.group_sale_salesman"
+    <!-- ============================================================ -->
+    <!-- Data Section -->
+    <!-- ============================================================ -->
+    <menuitem id="menu_marketing_data"
+              name="Data"
+              parent="menu_marketing_analytics_root"
               sequence="20"/>
 
-    <!-- Configuration -->
-    <menuitem id="menu_numo_marketing_config"
+    <menuitem id="menu_marketing_campaigns"
+              name="Campaigns"
+              parent="menu_marketing_data"
+              action="action_marketing_campaign"
+              sequence="10"/>
+
+    <menuitem id="menu_marketing_metrics"
+              name="Metrics"
+              parent="menu_marketing_data"
+              action="action_marketing_metric"
+              sequence="20"/>
+
+    <!-- ============================================================ -->
+    <!-- Reports Section -->
+    <!-- ============================================================ -->
+    <menuitem id="menu_marketing_reports"
+              name="Reports"
+              parent="menu_marketing_analytics_root"
+              sequence="30"/>
+
+    <menuitem id="menu_marketing_report_templates"
+              name="Report Templates"
+              parent="menu_marketing_reports"
+              action="action_marketing_report"
+              sequence="10"
+              groups="numo_marketing.group_marketing_manager"/>
+
+    <!-- ============================================================ -->
+    <!-- Configuration Section (Manager only) -->
+    <!-- ============================================================ -->
+    <menuitem id="menu_marketing_config"
               name="Configuration"
-              parent="menu_numo_marketing_root"
+              parent="menu_marketing_analytics_root"
+              groups="numo_marketing.group_marketing_manager"
               sequence="90"/>
 
-    <menuitem id="menu_campaign_mapping"
-              name="Campaign Mappings"
-              parent="menu_numo_marketing_config"
-              action="action_campaign_mapping"
+    <menuitem id="menu_marketing_accounts"
+              name="Ad Accounts"
+              parent="menu_marketing_config"
+              action="action_marketing_account"
               sequence="10"/>
 
-    <menuitem id="menu_ad_sync_log"
-              name="Sync Log"
-              parent="menu_numo_marketing_config"
-              action="action_ad_sync_log"
-              groups="sales_team.group_sale_manager"
+    <menuitem id="menu_marketing_sync_log"
+              name="Sync Logs"
+              parent="menu_marketing_config"
+              action="action_marketing_sync_log"
               sequence="20"/>
 
+    <menuitem id="menu_marketing_manual_entry"
+              name="Manual Data Entry"
+              parent="menu_marketing_config"
+              action="numo_marketing.action_manual_entry_wizard"
+              sequence="30"/>
 
 </odoo>

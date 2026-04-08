@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!-- Report Config: Form View -->
+    <!-- ============================================================ -->
+    <record id="view_marketing_report_form" model="ir.ui.view">
+        <field name="name">numo.marketing.report.form</field>
+        <field name="model">numo.marketing.report</field>
+        <field name="arch" type="xml">
+            <form string="Marketing Report">
+                <header>
+                    <button name="action_generate_pdf"
+                            string="Generate PDF"
+                            type="object"
+                            class="btn-primary"
+                            icon="fa-file-pdf-o"/>
+                    <button name="action_send_report"
+                            string="Send Now"
+                            type="object"
+                            class="btn-secondary"
+                            icon="fa-envelope"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Report Name"/></h1>
+                    </div>
+                    <group>
+                        <group string="Report Settings">
+                            <field name="report_type"/>
+                            <field name="frequency"/>
+                            <field name="date_range"/>
+                            <field name="date_from"
+                                   invisible="date_range != 'custom'"/>
+                            <field name="date_to"
+                                   invisible="date_range != 'custom'"/>
+                        </group>
+                        <group string="Filters &amp; Delivery">
+                            <field name="filter_platform"/>
+                            <field name="filter_project_id"/>
+                            <field name="recipient_ids" widget="many2many_tags"/>
+                            <field name="last_sent"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- Report Config: Tree View -->
+    <!-- ============================================================ -->
+    <record id="view_marketing_report_tree" model="ir.ui.view">
+        <field name="name">numo.marketing.report.tree</field>
+        <field name="model">numo.marketing.report</field>
+        <field name="arch" type="xml">
+            <tree string="Marketing Reports">
+                <field name="name"/>
+                <field name="report_type"/>
+                <field name="frequency" widget="badge"/>
+                <field name="date_range"/>
+                <field name="last_sent"/>
+                <field name="active"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- Report Config: Action -->
+    <!-- ============================================================ -->
+    <record id="action_marketing_report" model="ir.actions.act_window">
+        <field name="name">Report Templates</field>
+        <field name="res_model">numo.marketing.report</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first report template
+            </p>
+            <p>Configure automated reports that generate PDFs and send them on schedule.</p>
+        </field>
+    </record>
+
+</odoo>

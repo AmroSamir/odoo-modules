@@ -1,13 +1,14 @@
 """Google Ads adapter using REST API (v18) with raw requests."""
 import logging
+from datetime import date
 
 from .base_adapter import BaseAdAdapter
 
 _logger = logging.getLogger(__name__)
 
-GOOGLE_ADS_API_VERSION = 'v18'
-GOOGLE_ADS_BASE = f'https://googleads.googleapis.com/{GOOGLE_ADS_API_VERSION}'
-GOOGLE_TOKEN_URL = 'https://oauth2.googleapis.com/token'
+API_VERSION = 'v18'
+BASE_URL = f'https://googleads.googleapis.com/{API_VERSION}'
+TOKEN_URL = 'https://oauth2.googleapis.com/token'
 
 
 class GoogleAdsAdapter(BaseAdAdapter):
@@ -22,18 +23,19 @@ class GoogleAdsAdapter(BaseAdAdapter):
 
     def authenticate(self) -> str:
         """Refresh OAuth2 token using refresh_token."""
-        resp = self.session.post(GOOGLE_TOKEN_URL, data={
+        data, error = self._request_with_retry('POST', TOKEN_URL, json={
             'client_id': self.credentials['client_id'],
             'client_secret': self.credentials['client_secret'],
             'refresh_token': self.credentials['refresh_token'],
             'grant_type': 'refresh_token',
-        }, timeout=30)
-        resp.raise_for_status()
-        token = resp.json().get('access_token', '')
+        })
+        if error:
+            raise RuntimeError(f"Google Ads auth failed: {error}")
+        token = data.get('access_token', '')
         self.credentials['access_token'] = token
         return token
 
-    def fetch_campaign_data(self, date_from, date_to):
+    def fetch_campaign_data(self, date_from: date, date_to: date) -> list[dict]:
         token = self.authenticate()
         customer_id = self.credentials['customer_id'].replace('-', '')
         df, dt = self._date_range_str(date_from, date_to)
@@ -53,19 +55,21 @@ class GoogleAdsAdapter(BaseAdAdapter):
             ORDER BY segments.date
         """
 
-        url = f"{GOOGLE_ADS_BASE}/customers/{customer_id}/googleAds:searchStream"
+        url = f"{BASE_URL}/customers/{customer_id}/googleAds:searchStream"
         headers = {
             'Authorization': f'Bearer {token}',
             'developer-token': self.credentials['developer_token'],
             'Content-Type': 'application/json',
         }
 
-        resp = self.session.post(url, json={'query': query}, headers=headers, timeout=60)
-        resp.raise_for_status()
-        results = resp.json()
+        data, error = self._request_with_retry(
+            'POST', url, json={'query': query}, headers=headers, timeout=60,
+        )
+        if error:
+            raise RuntimeError(f"Google Ads fetch failed: {error}")
 
         rows = []
-        for batch in results if isinstance(results, list) else [results]:
+        for batch in data if isinstance(data, list) else [data]:
             for result in batch.get('results', []):
                 campaign = result.get('campaign', {})
                 segments = result.get('segments', {})
