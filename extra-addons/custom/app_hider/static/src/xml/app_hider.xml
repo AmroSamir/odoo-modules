@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="app_hider.AppHiderSettings">
+        <div class="o_action app-hider-page">
+
+            <div class="app-hider-header">
+                <h2>App Visibility</h2>
+                <p>
+                    Toggle which apps appear on the Odoo home screen.
+                    Hidden apps are NOT uninstalled — they are just hidden from the dashboard.
+                </p>
+            </div>
+
+            <t t-if="state.loading">
+                <div class="app-hider-loading">
+                    <i class="fa fa-spinner fa-spin fa-2x"/>
+                    <p>Loading apps...</p>
+                </div>
+            </t>
+
+            <t t-else="">
+                <div class="app-hider-grid">
+                    <t t-foreach="state.menus" t-as="menu" t-key="menu.id">
+                        <div class="app-hider-card" t-att-class="menu.hidden ? 'app-hider-card-hidden' : ''">
+                            <div class="app-hider-card-info">
+                                <strong t-esc="menu.name"/>
+                                <small t-esc="menu.xmlid"/>
+                            </div>
+                            <div class="form-check form-switch" style="margin: 0; padding-left: 0;">
+                                <input
+                                    class="form-check-input float-none"
+                                    type="checkbox"
+                                    role="switch"
+                                    t-att-checked="!menu.hidden"
+                                    t-on-change="() => this.onToggle(menu)"
+                                    style="width: 40px; height: 20px; cursor: pointer;"
+                                />
+                            </div>
+                        </div>
+                    </t>
+                </div>
+
+                <div class="app-hider-note">
+                    <i class="fa fa-info-circle"/>
+                    <span>
+                        Changes take effect immediately. Refresh the home screen to see updates.
+                    </span>
+                </div>
+            </t>
+
+        </div>
+    </t>
+
+</templates>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Client action for the App Hider settings page -->
+    <record id="action_app_hider_settings" model="ir.actions.client">
+        <field name="name">App Visibility</field>
+        <field name="tag">app_hider_settings</field>
+    </record>
+
+    <!-- Menu item under Settings -->
+    <menuitem
+        id="menu_app_hider_settings"
+        name="App Visibility"
+        parent="base.menu_administration"
+        action="action_app_hider_settings"
+        sequence="100"
+    />
+
+</odoo>

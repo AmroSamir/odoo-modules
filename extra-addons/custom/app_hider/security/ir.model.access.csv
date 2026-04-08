@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_app_hider_hidden_admin,app.hider.hidden admin,model_app_hider_hidden,base.group_system,1,1,1,1
+access_app_hider_hidden_user,app.hider.hidden user,model_app_hider_hidden,base.group_user,1,0,0,0

@@ -1,0 +1,113 @@
+/* ═══════════════════════════════════════════════════════════════
+   App Hider — Styles
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Settings page layout ─────────────────────────────────────── */
+
+.app-hider-page {
+    padding: 24px;
+    max-width: 960px;
+    margin: 0 auto;
+    overflow-y: auto;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+.app-hider-header h2 {
+    margin: 0 0 8px 0;
+    color: #333;
+}
+
+.app-hider-header p {
+    color: #666;
+    margin: 0 0 20px 0;
+}
+
+.app-hider-loading {
+    text-align: center;
+    padding: 40px;
+    color: #714B67;
+}
+
+.app-hider-loading p {
+    margin-top: 12px;
+    color: #666;
+}
+
+/* ── Two-column card grid ─────────────────────────────────────── */
+
+.app-hider-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.app-hider-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 10px 16px;
+    transition: opacity 0.2s ease, background 0.2s ease;
+}
+
+.app-hider-card:hover {
+    background: #f8f5f7;
+}
+
+.app-hider-card-hidden {
+    opacity: 0.5;
+    background: #f9f9f9;
+}
+
+.app-hider-card-info {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.app-hider-card-info strong {
+    font-size: 14px;
+    color: #333;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.app-hider-card-info small {
+    font-size: 11px;
+    color: #999;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ── Info note at the bottom ──────────────────────────────────── */
+
+.app-hider-note {
+    margin-top: 16px;
+    margin-bottom: 24px;
+    padding: 12px;
+    background: #fff3cd;
+    border-radius: 6px;
+    border: 1px solid #ffc107;
+    color: #856404;
+}
+
+.app-hider-note i {
+    margin-right: 8px;
+}
+
+/* ── Home screen: smooth transition on toggle ─────────────────── */
+
+.o_home_menu .o_apps .o_app {
+    transition: opacity 0.2s ease;
+}
+
+/* ── Ensure Odoo action container allows scrolling ────────────── */
+
+.o_action_manager > .o_action {
+    overflow-y: auto;
+}
