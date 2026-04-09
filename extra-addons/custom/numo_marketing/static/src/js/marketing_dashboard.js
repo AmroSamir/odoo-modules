@@ -8,6 +8,7 @@ import { renderFunnel } from "./funnel_plugin";
 
 class MarketingDashboard extends Component {
     static template = "numo_marketing.MarketingDashboard";
+    static props = ["*"];
 
     setup() {
         this.orm = useService("orm");
