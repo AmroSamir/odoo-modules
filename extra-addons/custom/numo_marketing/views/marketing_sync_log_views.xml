@@ -88,7 +88,7 @@
                         domain="[('status', '=', 'error')]"/>
                 <filter string="Running" name="running"
                         domain="[('status', '=', 'running')]"/>
-                <group expand="0" string="Group By">
+                <group string="Group By">
                     <filter string="Account" name="group_account"
                             context="{'group_by': 'account_id'}"/>
                     <filter string="Platform" name="group_platform"

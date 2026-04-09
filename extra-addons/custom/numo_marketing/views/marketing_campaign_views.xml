@@ -118,7 +118,7 @@
                 <separator/>
                 <filter string="My Campaigns" name="my_campaigns"
                         domain="[('owner_id', '=', uid)]"/>
-                <group expand="0" string="Group By">
+                <group string="Group By">
                     <filter string="Platform" name="group_platform"
                             context="{'group_by': 'platform'}"/>
                     <filter string="Project" name="group_project"

@@ -147,7 +147,7 @@
                 <separator/>
                 <filter string="Sync Error" name="sync_error"
                         domain="[('last_sync_status', '=', 'error')]"/>
-                <group expand="0" string="Group By">
+                <group string="Group By">
                     <filter string="Platform" name="group_platform"
                             context="{'group_by': 'platform'}"/>
                 </group>

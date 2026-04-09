@@ -122,7 +122,7 @@
                         domain="[('sync_source', '=', 'api')]"/>
                 <filter string="Manual" name="manual"
                         domain="[('sync_source', '=', 'manual')]"/>
-                <group expand="0" string="Group By">
+                <group string="Group By">
                     <filter string="Campaign" name="group_campaign"
                             context="{'group_by': 'campaign_id'}"/>
                     <filter string="Platform" name="group_platform"
