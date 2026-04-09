@@ -8,7 +8,7 @@
         <field name="name">numo.marketing.sync.log.tree</field>
         <field name="model">numo.marketing.sync.log</field>
         <field name="arch" type="xml">
-            <tree string="Sync Logs" default_order="create_date desc"
+            <list string="Sync Logs" default_order="create_date desc"
                   decoration-danger="status == 'error'"
                   decoration-warning="status == 'partial'"
                   decoration-success="status == 'done'"
@@ -28,7 +28,7 @@
                 <field name="records_updated"/>
                 <field name="duration_seconds" string="Duration (s)"/>
                 <field name="retry_count" optional="hide"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -106,7 +106,7 @@
     <record id="action_marketing_sync_log" model="ir.actions.act_window">
         <field name="name">Sync Logs</field>
         <field name="res_model">numo.marketing.sync.log</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
         <field name="search_view_id" ref="view_marketing_sync_log_search"/>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">

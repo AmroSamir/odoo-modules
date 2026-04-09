@@ -8,7 +8,7 @@
         <field name="name">numo.marketing.metric.tree</field>
         <field name="model">numo.marketing.metric</field>
         <field name="arch" type="xml">
-            <tree string="Daily Metrics" default_order="date desc">
+            <list string="Daily Metrics" default_order="date desc">
                 <field name="date"/>
                 <field name="campaign_id"/>
                 <field name="platform"/>
@@ -27,7 +27,7 @@
                        decoration-success="roas >= 2"
                        decoration-danger="roas &lt; 1"/>
                 <field name="profit" sum="Total" optional="show"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -178,7 +178,7 @@
     <record id="action_marketing_metric" model="ir.actions.act_window">
         <field name="name">Metrics</field>
         <field name="res_model">numo.marketing.metric</field>
-        <field name="view_mode">tree,pivot,graph,form</field>
+        <field name="view_mode">list,pivot,graph,form</field>
         <field name="search_view_id" ref="view_marketing_metric_search"/>
         <field name="context">{'search_default_this_month': 1}</field>
         <field name="help" type="html">

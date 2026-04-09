@@ -117,7 +117,7 @@
         <field name="name">numo.marketing.account.tree</field>
         <field name="model">numo.marketing.account</field>
         <field name="arch" type="xml">
-            <tree string="Ad Platform Accounts">
+            <list string="Ad Platform Accounts">
                 <field name="name"/>
                 <field name="platform"/>
                 <field name="last_sync_date"/>
@@ -126,7 +126,7 @@
                        decoration-danger="last_sync_status == 'error'"
                        decoration-warning="last_sync_status == 'partial'"/>
                 <field name="active" column_invisible="True"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -161,7 +161,7 @@
     <record id="action_marketing_account" model="ir.actions.act_window">
         <field name="name">Ad Accounts</field>
         <field name="res_model">numo.marketing.account</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
         <field name="search_view_id" ref="view_marketing_account_search"/>
         <field name="context">{'search_default_active': 1}</field>
         <field name="help" type="html">

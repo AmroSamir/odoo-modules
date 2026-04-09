@@ -55,14 +55,14 @@
         <field name="name">numo.marketing.report.tree</field>
         <field name="model">numo.marketing.report</field>
         <field name="arch" type="xml">
-            <tree string="Marketing Reports">
+            <list string="Marketing Reports">
                 <field name="name"/>
                 <field name="report_type"/>
                 <field name="frequency" widget="badge"/>
                 <field name="date_range"/>
                 <field name="last_sent"/>
                 <field name="active"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -72,7 +72,7 @@
     <record id="action_marketing_report" model="ir.actions.act_window">
         <field name="name">Report Templates</field>
         <field name="res_model">numo.marketing.report</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 Create your first report template

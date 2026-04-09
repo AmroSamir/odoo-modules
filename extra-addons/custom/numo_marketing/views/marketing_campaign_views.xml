@@ -43,7 +43,7 @@
                     <notebook>
                         <page string="Daily Metrics" name="metrics">
                             <field name="metric_ids">
-                                <tree editable="bottom" default_order="date desc">
+                                <list editable="bottom" default_order="date desc">
                                     <field name="date"/>
                                     <field name="impressions" sum="Total"/>
                                     <field name="clicks" sum="Total"/>
@@ -55,7 +55,7 @@
                                     <field name="ctr"/>
                                     <field name="cpl"/>
                                     <field name="roas"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                     </notebook>
@@ -71,7 +71,7 @@
         <field name="name">numo.marketing.campaign.tree</field>
         <field name="model">numo.marketing.campaign</field>
         <field name="arch" type="xml">
-            <tree string="Marketing Campaigns"
+            <list string="Marketing Campaigns"
                   decoration-muted="not active">
                 <field name="name"/>
                 <field name="platform"/>
@@ -84,7 +84,7 @@
                        decoration-danger="roas &lt; 1"
                        decoration-warning="roas >= 1 and roas &lt; 2"/>
                 <field name="active" column_invisible="True"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -138,7 +138,7 @@
     <record id="action_marketing_campaign" model="ir.actions.act_window">
         <field name="name">Campaigns</field>
         <field name="res_model">numo.marketing.campaign</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
         <field name="search_view_id" ref="view_marketing_campaign_search"/>
         <field name="context">{'search_default_active': 1}</field>
         <field name="help" type="html">
