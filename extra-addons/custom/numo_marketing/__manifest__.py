@@ -44,12 +44,12 @@
         'reports/report_executive_summary.xml',
         'reports/report_campaign_detail.xml',
         'reports/report_channel_performance.xml',
-        # Views
+        # Views (sync_log before account — account form references sync_log action)
+        'views/marketing_sync_log_views.xml',
         'views/marketing_account_views.xml',
         'views/marketing_campaign_views.xml',
         'views/marketing_metric_views.xml',
         'views/marketing_report_views.xml',
-        'views/marketing_sync_log_views.xml',
         'views/dashboard_views.xml',
         # Wizards
         'wizards/manual_entry_wizard_views.xml',
