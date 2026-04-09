@@ -68,7 +68,7 @@ class MarketingAccount(models.Model):
         ('partial', 'Partial'),
     ], string='Last Sync Status', readonly=True)
 
-    platform_company_unique = models.Constraint(
+    _platform_company_unique = models.Constraint(
         'unique(platform, company_id)',
         'Only one account per platform per company is allowed.',
     )

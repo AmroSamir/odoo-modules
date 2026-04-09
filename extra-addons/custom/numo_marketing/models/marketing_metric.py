@@ -128,7 +128,7 @@ class MarketingMetric(models.Model):
         ondelete='set null',
     )
 
-    campaign_date_unique = models.Constraint(
+    _campaign_date_unique = models.Constraint(
         'unique(campaign_id, date)',
         'Only one metric record per campaign per day.',
     )
