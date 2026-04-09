@@ -137,7 +137,7 @@
         <field name="name">numo.marketing.account.search</field>
         <field name="model">numo.marketing.account</field>
         <field name="arch" type="xml">
-            <search string="Ad Accounts">
+            <search>
                 <field name="name"/>
                 <field name="platform"/>
                 <filter string="Active" name="active"
@@ -147,10 +147,8 @@
                 <separator/>
                 <filter string="Sync Error" name="sync_error"
                         domain="[('last_sync_status', '=', 'error')]"/>
-                <group string="Group By">
-                    <filter string="Platform" name="group_platform"
-                            context="{'group_by': 'platform'}"/>
-                </group>
+                <filter string="Platform" name="group_platform"
+                        context="{'group_by': 'platform'}"/>
             </search>
         </field>
     </record>

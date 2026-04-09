@@ -48,7 +48,6 @@
                             <field name="date_from"/>
                             <field name="date_to"/>
                             <field name="status" widget="badge"/>
-                        </group>
                         <group>
                             <field name="records_fetched"/>
                             <field name="records_created"/>
@@ -56,17 +55,14 @@
                             <field name="duration_seconds"/>
                             <field name="retry_count"/>
                             <field name="response_status"/>
-                        </group>
                     </group>
                     <group string="Error Details"
                            invisible="not error_message">
                         <field name="error_message" nolabel="1"
                                colspan="2" readonly="1"/>
-                    </group>
                     <group string="Request Details"
                            invisible="not request_url">
                         <field name="request_url"/>
-                    </group>
                 </sheet>
             </form>
         </field>
@@ -79,7 +75,7 @@
         <field name="name">numo.marketing.sync.log.search</field>
         <field name="model">numo.marketing.sync.log</field>
         <field name="arch" type="xml">
-            <search string="Sync Logs">
+            <search>
                 <field name="account_id"/>
                 <separator/>
                 <filter string="Success" name="done"
@@ -88,14 +84,13 @@
                         domain="[('status', '=', 'error')]"/>
                 <filter string="Running" name="running"
                         domain="[('status', '=', 'running')]"/>
-                <group string="Group By">
                     <filter string="Account" name="group_account"
                             context="{'group_by': 'account_id'}"/>
                     <filter string="Platform" name="group_platform"
                             context="{'group_by': 'platform'}"/>
                     <filter string="Status" name="group_status"
                             context="{'group_by': 'status'}"/>
-                </group>
+
             </search>
         </field>
     </record>
