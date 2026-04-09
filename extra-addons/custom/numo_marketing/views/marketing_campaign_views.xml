@@ -22,6 +22,7 @@
                             <field name="external_id"/>
                             <field name="campaign_type"/>
                             <field name="utm_campaign_id"/>
+                        </group>
                         <group string="Linking">
                             <field name="project_analytic_id"/>
                             <field name="product_id"/>
@@ -29,6 +30,7 @@
                             <field name="date_start"/>
                             <field name="date_end"/>
                             <field name="active" invisible="1"/>
+                        </group>
                     </group>
                     <group string="Aggregated KPIs" col="6">
                         <field name="total_spend"/>
@@ -37,6 +39,7 @@
                         <field name="total_leads"/>
                         <field name="total_revenue"/>
                         <field name="roas"/>
+                    </group>
                     <notebook>
                         <page string="Daily Metrics" name="metrics">
                             <field name="metric_ids">
@@ -123,7 +126,6 @@
                             context="{'group_by': 'owner_id'}"/>
                     <filter string="Type" name="group_type"
                             context="{'group_by': 'campaign_type'}"/>
-
             </search>
         </field>
     </record>
