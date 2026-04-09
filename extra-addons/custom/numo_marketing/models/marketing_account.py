@@ -68,11 +68,10 @@ class MarketingAccount(models.Model):
         ('partial', 'Partial'),
     ], string='Last Sync Status', readonly=True)
 
-    _sql_constraints = [
-        ('platform_company_unique',
-         'unique(platform, company_id)',
-         'Only one account per platform per company is allowed.'),
-    ]
+    platform_company_unique = models.Constraint(
+        'unique(platform, company_id)',
+        'Only one account per platform per company is allowed.',
+    )
 
     def get_credentials(self):
         """Return credentials dict for the adapter based on platform."""

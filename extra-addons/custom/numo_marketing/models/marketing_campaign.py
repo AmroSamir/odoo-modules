@@ -106,11 +106,10 @@ class MarketingCampaign(models.Model):
         store=True,
     )
 
-    _sql_constraints = [
-        ('external_account_unique',
-         'unique(external_id, account_id)',
-         'Campaign external ID must be unique per ad account.'),
-    ]
+    external_account_unique = models.Constraint(
+        'unique(external_id, account_id)',
+        'Campaign external ID must be unique per ad account.',
+    )
 
     @api.depends(
         'metric_ids.spend',
