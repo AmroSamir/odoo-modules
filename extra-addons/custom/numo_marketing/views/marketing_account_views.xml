@@ -23,17 +23,6 @@
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
-                        <button name="%(numo_marketing.action_marketing_sync_log)d"
-                                type="action"
-                                class="oe_stat_button"
-                                icon="fa-history"
-                                context="{'search_default_account_id': active_id}">
-                            <field name="last_sync_status" widget="badge"
-                                   decoration-success="last_sync_status == 'success'"
-                                   decoration-danger="last_sync_status == 'error'"
-                                   decoration-warning="last_sync_status == 'partial'"/>
-                            <span>Sync Log</span>
-                        </button>
                     </div>
                     <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger"
                             invisible="active"/>
