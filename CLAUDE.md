@@ -1,5 +1,88 @@
 # CLAUDE.md — Odoo 19 Enterprise Custom Modules
 
+## THE DRILL (read this first, every time)
+
+When fixing or finishing ANY code in these modules, follow this loop. Do
+not skip steps. Do not ask Amr to test until every box is checked.
+
+1. **Edit code** on disk (`~/numo-hatif-odoo/...` for the Hatif modules,
+   `extra-addons/custom/...` for the rest).
+2. **Re-read the file you just edited** with `cat`/`grep` to confirm the
+   change actually landed. The `Edit` tool sometimes reports "successfully
+   updated" while the file is unchanged — verify by reading bytes.
+3. **Upgrade the module** against the appropriate local Odoo DB:
+   ```bash
+   docker exec odoo-app odoo -d <db> -u <module> --stop-after-init --log-level=warn
+   ```
+   Read the full output. Any `WARNING`, `ERROR`, or `Traceback` ≠ success.
+4. **Restart the container** so Python class caches and the OWL bundle
+   pick up the new code:
+   ```bash
+   docker compose -f /Users/amro/Downloads/Claude/ai-dnd-builder/odoo-local/docker-compose.yml restart odoo
+   sleep 5
+   ```
+5. **Exercise the actual feature path end-to-end** before declaring
+   done. Pick the tightest available probe:
+   - For backend logic: `docker exec -i odoo-app odoo shell -d <db> --no-http <<'PY' ... PY` and call the real method.
+   - For UI rendering: simulate the browser path via `/web/dataset/call_kw`
+     authenticated as a real user; check the returned arch / DOM / data,
+     not just that the model method ran.
+   - For buttons: invoke the button's `name=` method on the form's model
+     — NOT just the underlying service.
+6. **Confirm the original goal is met** — not "tests pass" or
+   "compiles", but the specific outcome the user asked for. If the user
+   asked for "a tab in the left rail", verify the tab is in the rendered
+   nav, not just that `<app>` blocks exist in the arch.
+7. **Only then** report done and ask Amr to verify in his browser. The
+   report must include the proof (function call output, query result, or
+   screenshot from automation), not a claim.
+8. **Push to GitHub** once the user signs off.
+
+If verification fails, iterate in the same turn until it passes. No
+"should work" / "probably renders" / "try refreshing" without proof.
+
+### Sub-rules learned the hard way
+- **Always know which DB the user is browsing.** `odoo` vs `test` vs prod
+  have completely different installed-app sets. Browser tabs that look
+  identical can be different worlds. Probe `/web/session/get_session_info`
+  or `psql -d <db> -c "SELECT name FROM ir_module_module WHERE state='installed'"`.
+- **Never name a throwaway variable `_` in a method that also calls
+  `gettext _()`.** Python scope-binds `_` as local across the whole
+  function and `_('...')` then raises `UnboundLocalError`.
+- **Never put literal angle-bracket markup inside an XML comment** that
+  Odoo loads — the view loader sometimes re-emits comment text as live
+  tags, producing phantom empty `<app>`/`<field>` elements that break
+  downstream compilers.
+- **Never name a custom field `display_name`.** Odoo auto-generates a
+  computed `display_name` on every model; your stored Char silently
+  vanishes on read. Use `name` (which becomes `_rec_name` automatically)
+  or a different name.
+- **Never assume a vendor API returns a string** because the docs say
+  so. Always defensively handle dict, int, None — Hatif's `phoneNumber`
+  is a dict, `role` is an int, etc. Probe the live response shape first.
+- **Odoo 19 renames to remember:**
+  - `res.groups.users` → `user_ids`; `res.users.groups_id` → `group_ids`
+  - `res.groups.category_id`, `res.groups.comment` — removed
+  - `ir.cron.numbercall`, `ir.cron.nextcall` — removed
+  - search views: no `string=` on `<search>`, no `<group>` wrapper for
+    group-by filters
+  - `ir.actions.act_window.target='inline'` — removed (use `current`)
+  - `_sql_constraints` deprecated in favor of `models.Constraint(...)`
+  - `<app data-key="...">` (Odoo 17) → `<app name="...">` (Odoo 19)
+  - `<app name=...>` tabs in Settings only render when the module is
+    `application: True` AND the user is in the listed `groups=`
+  - Server actions (`ir.actions.server`) do not appear in the new flat
+    top navbar — put one-click buttons on the form, not in the menu
+- **Implied groups don't propagate retroactively.** Adding `implied_ids`
+  to an existing group via XML only takes effect for NEW assignments.
+  For existing admin users, set `user_ids` directly on your group XML.
+- **Bind-mount edits + `--dev=reload` on macOS host don't always trigger
+  inotify** across the OrbStack boundary. After editing a `.py`, restart
+  the container explicitly to be sure Python re-imports.
+- **`safe_eval` for `ir.cron.code` forbids `import` statements.** Move
+  imports into a model method and call `model.<method>()` from the cron
+  body.
+
 ## Project Overview
 
 Unified workspace for all Numo Odoo 19 custom modules. Each module lives in `extra-addons/custom/` and is deployed to a Contabo VPS running Docker.
