@@ -82,6 +82,17 @@ If verification fails, iterate in the same turn until it passes. No
 - **`safe_eval` for `ir.cron.code` forbids `import` statements.** Move
   imports into a model method and call `model.<method>()` from the cron
   body.
+- **`readonly=True` + `required=True` on a model field that's populated by
+  `default_get` is a save-round-trip footgun.** OWL skips readonly fields
+  from the write payload, so the value never echoes back, the transient
+  record loses it, and the required-field constraint fires. Make the field
+  not readonly at the model level and enforce read-only via the view
+  (`column_invisible="1"` for hidden columns, `readonly="1"` per-attribute
+  if just non-editable).
+- **A wizard line list view must include every required Many2one** the
+  model declares, even if hidden — Odoo only persists field values that
+  are present in the rendered view. Add `<field name="x" column_invisible="1"/>`
+  for any required FK that the user shouldn't see.
 
 ## Project Overview
 
