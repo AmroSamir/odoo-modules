@@ -23,3 +23,17 @@ class CrmTeam(models.Model):
         string='Analytic Department',
         domain="[('plan_id', '=', 3)]",  # plan_id=3 = الأقسام / Departments
     )
+    x_team_type = fields.Selection(
+        [('onsite', 'On-site'), ('remote', 'Remote')],
+        string='Team Type',
+    )
+    x_project_state = fields.Selection(
+        [
+            ('active', 'Active'),
+            ('inactive', 'Inactive'),
+            ('not_started', 'Not Started Yet'),
+        ],
+        string='Project State',
+    )
+    x_start_date = fields.Date(string='Start Date')
+    x_end_date = fields.Date(string='End Date')

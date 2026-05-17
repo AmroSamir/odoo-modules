@@ -50,19 +50,10 @@
         </field>
     </record>
 
-    <!-- Add pricelist field to Sales Team form -->
-    <record id="view_crm_team_form_inherit_numo" model="ir.ui.view">
-        <field name="name">crm.team.form.inherit.numo</field>
-        <field name="model">crm.team</field>
-        <field name="inherit_id" ref="sales_team.crm_team_view_form"/>
-        <field name="arch" type="xml">
-            <xpath expr="//field[@name='company_id']" position="after">
-                <field name="pricelist_id"/>
-                <field name="analytic_project_id"/>
-                <field name="analytic_team_type_id"/>
-                <field name="analytic_department_id"/>
-            </xpath>
-        </field>
-    </record>
+    <!-- NOTE: team form additions (pricelist + analytic fields) live in
+         views/studio_views.xml inside view_crm_team_form_project_fields,
+         which replaces the right group entirely. Splitting them across
+         two views caused the analytic fields to be wiped by the Studio
+         replace. They are gated to base.group_system (admins) there. -->
 
 </odoo>

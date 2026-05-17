@@ -23,3 +23,8 @@ filestore/
 # Environment
 .env
 .env.local
+
+# Tool state (claude-flow / claude-mem / ruflo runtime data)
+.claude-flow/
+.claude-mem/
+.ruflo/

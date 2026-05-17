@@ -25,4 +25,13 @@
         <field name="perm_unlink" eval="False"/>
     </record>
 
+    <!-- Tighten the standard "Personal Leads" rule: drop the (user_id=False)
+         clause so Sales Agents no longer see unassigned leads. Agents now
+         see only leads explicitly assigned to them. Team leaders still see
+         their team's leads via rule_crm_lead_team_leader above. -->
+    <record id="crm.crm_rule_personal_lead" model="ir.rule">
+        <field name="name">Personal Leads</field>
+        <field name="domain_force">[('user_id', '=', user.id)]</field>
+    </record>
+
 </odoo>
