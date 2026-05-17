@@ -28,3 +28,9 @@ filestore/
 .claude-flow/
 .claude-mem/
 .ruflo/
+
+# numo_custom_odoo is now a standalone repo at AmroSamir/numo_custom_odoo
+# It still lives at this path on disk for development, but this workspace
+# repo does not track its files. Clone the standalone repo separately if
+# you want to work on it in isolation.
+extra-addons/custom/numo_custom_odoo/
