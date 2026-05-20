@@ -34,3 +34,9 @@ filestore/
 # repo does not track its files. Clone the standalone repo separately if
 # you want to work on it in isolation.
 extra-addons/custom/numo_custom_odoo/
+
+# creative_studio is now a standalone repo at AmroSamir/numo_creative_studio
+# It still lives at this path on disk for development, but this workspace
+# repo does not track its files. Clone the standalone repo separately if
+# you want to work on it in isolation.
+extra-addons/custom/creative_studio/
