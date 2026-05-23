@@ -89,6 +89,12 @@
                         <group>
                             <field name="snapchat_refresh_token" password="True"/>
                             <field name="snapchat_ad_account_id"/>
+                            <button name="action_authorize_snapchat"
+                                    string="Authorize with Snapchat"
+                                    type="object"
+                                    class="btn-warning"
+                                    icon="fa-snapchat"
+                                    invisible="not snapchat_client_id or not snapchat_client_secret"/>
                         </group>
                     </group>
 

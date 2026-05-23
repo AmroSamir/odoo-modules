@@ -3,6 +3,7 @@
 import { Component, useState, useRef, onWillStart, onMounted, onWillUnmount } from "@odoo/owl";
 import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
+import { loadBundle } from "@web/core/assets";
 import { createChart, getPlatformColors, formatValue, getAxisOptions, CHART_COLORS } from "./chart_helpers";
 import { renderFunnel } from "./funnel_plugin";
 
@@ -40,6 +41,7 @@ class MarketingDashboard extends Component {
         });
 
         onWillStart(async () => {
+            await loadBundle("web.chartjs_lib");
             await this.loadData();
         });
 
