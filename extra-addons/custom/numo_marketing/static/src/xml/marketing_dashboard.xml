@@ -5,9 +5,10 @@
     <div class="numo_dashboard">
 
         <!-- ============================================================ -->
-        <!-- Header + Filter Bar (single row) -->
+        <!-- Header Bar -->
         <!-- ============================================================ -->
-        <div class="numo_header_bar">
+        <div class="numo_header">
+            <h1 class="numo_title"><t t-esc="T('title')"/></h1>
             <div class="numo_template_tabs">
                 <button t-attf-class="numo_tab #{state.activeTemplate === 'all' ? 'active' : ''}"
                         t-on-click="() => this.setTemplate('all')">All</button>
@@ -20,54 +21,58 @@
                 <button t-attf-class="numo_tab #{state.activeTemplate === 'funnel' ? 'active' : ''}"
                         t-on-click="() => this.setTemplate('funnel')">Funnel</button>
             </div>
-            <div class="numo_filters_inline">
-                <div class="numo_filter_group">
-                    <label><t t-esc="T('date_from')"/></label>
-                    <input type="date" t-att-value="state.filters.date_from"
-                           t-on-change="(ev) => this.onFilterChange('date_from', ev)"/>
-                </div>
-                <div class="numo_filter_group">
-                    <label><t t-esc="T('date_to')"/></label>
-                    <input type="date" t-att-value="state.filters.date_to"
-                           t-on-change="(ev) => this.onFilterChange('date_to', ev)"/>
-                </div>
-                <div class="numo_filter_group">
-                    <label><t t-esc="T('platform')"/></label>
-                    <select t-on-change="(ev) => this.onFilterChange('platform', ev)">
-                        <option value=""><t t-esc="T('all')"/></option>
-                        <t t-foreach="state.data?.filter_options?.platforms || []" t-as="p" t-key="p.value">
-                            <option t-att-value="p.value" t-att-selected="state.filters.platform === p.value">
-                                <t t-esc="p.label"/>
-                            </option>
-                        </t>
-                    </select>
-                </div>
-                <div class="numo_filter_group">
-                    <label><t t-esc="T('project')"/></label>
-                    <select t-on-change="(ev) => this.onFilterChange('project_id', ev)">
-                        <option value=""><t t-esc="T('all')"/></option>
-                        <t t-foreach="state.data?.filter_options?.projects || []" t-as="p" t-key="p.value">
-                            <option t-att-value="p.value" t-att-selected="state.filters.project_id === p.value">
-                                <t t-esc="p.label"/>
-                            </option>
-                        </t>
-                    </select>
-                </div>
-                <div class="numo_filter_group numo_filter_compare">
-                    <label>
-                        <input type="checkbox" t-att-checked="state.filters.compare"
-                               t-on-change="(ev) => this.onCompareToggle(ev)"/>
-                        <t t-esc="T('compare')"/>
-                    </label>
-                </div>
-                <div class="numo_filter_actions">
-                    <button class="numo_btn numo_btn_primary" t-on-click="applyFilters">
-                        <t t-esc="T('apply')"/>
-                    </button>
-                    <button class="numo_btn numo_btn_secondary" t-on-click="resetFilters">
-                        <t t-esc="T('reset')"/>
-                    </button>
-                </div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- Filter Bar -->
+        <!-- ============================================================ -->
+        <div class="numo_filter_bar">
+            <div class="numo_filter_group">
+                <label><t t-esc="T('date_from')"/></label>
+                <input type="date" t-att-value="state.filters.date_from"
+                       t-on-change="(ev) => this.onFilterChange('date_from', ev)"/>
+            </div>
+            <div class="numo_filter_group">
+                <label><t t-esc="T('date_to')"/></label>
+                <input type="date" t-att-value="state.filters.date_to"
+                       t-on-change="(ev) => this.onFilterChange('date_to', ev)"/>
+            </div>
+            <div class="numo_filter_group">
+                <label><t t-esc="T('platform')"/></label>
+                <select t-on-change="(ev) => this.onFilterChange('platform', ev)">
+                    <option value=""><t t-esc="T('all')"/></option>
+                    <t t-foreach="state.data?.filter_options?.platforms || []" t-as="p" t-key="p.value">
+                        <option t-att-value="p.value" t-att-selected="state.filters.platform === p.value">
+                            <t t-esc="p.label"/>
+                        </option>
+                    </t>
+                </select>
+            </div>
+            <div class="numo_filter_group">
+                <label><t t-esc="T('project')"/></label>
+                <select t-on-change="(ev) => this.onFilterChange('project_id', ev)">
+                    <option value=""><t t-esc="T('all')"/></option>
+                    <t t-foreach="state.data?.filter_options?.projects || []" t-as="p" t-key="p.value">
+                        <option t-att-value="p.value" t-att-selected="state.filters.project_id === p.value">
+                            <t t-esc="p.label"/>
+                        </option>
+                    </t>
+                </select>
+            </div>
+            <div class="numo_filter_group numo_filter_compare">
+                <label>
+                    <input type="checkbox" t-att-checked="state.filters.compare"
+                           t-on-change="(ev) => this.onCompareToggle(ev)"/>
+                    <t t-esc="T('compare')"/>
+                </label>
+            </div>
+            <div class="numo_filter_actions">
+                <button class="numo_btn numo_btn_primary" t-on-click="applyFilters">
+                    <t t-esc="T('apply')"/>
+                </button>
+                <button class="numo_btn numo_btn_secondary" t-on-click="resetFilters">
+                    <t t-esc="T('reset')"/>
+                </button>
             </div>
         </div>
 

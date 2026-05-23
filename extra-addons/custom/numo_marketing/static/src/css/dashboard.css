@@ -43,25 +43,21 @@
     color: var(--numo-text);
 }
 
-/* --- Header + Filter Bar (single row) --- */
-.numo_header_bar {
+/* --- Header --- */
+.numo_header {
     display: flex;
     align-items: center;
-    gap: 16px;
-    background: var(--numo-card-bg);
-    padding: 10px 16px;
-    border-radius: var(--numo-radius);
-    box-shadow: var(--numo-shadow);
-    margin-bottom: 24px;
+    justify-content: space-between;
+    margin-bottom: 20px;
     flex-wrap: wrap;
+    gap: 12px;
 }
 
-.numo_filters_inline {
-    display: flex;
-    align-items: flex-end;
-    gap: 12px;
-    flex-wrap: wrap;
-    flex: 1;
+.numo_title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--numo-text);
+    margin: 0;
 }
 
 /* --- Template Tabs --- */
@@ -97,7 +93,18 @@
     box-shadow: 0 2px 4px rgba(99, 102, 241, 0.3);
 }
 
-/* --- Filter Bar (legacy, kept for filter group styles) --- */
+/* --- Filter Bar --- */
+.numo_filter_bar {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+    background: var(--numo-card-bg);
+    padding: 16px 20px;
+    border-radius: var(--numo-radius);
+    box-shadow: var(--numo-shadow);
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+}
 
 .numo_filter_group {
     display: flex;

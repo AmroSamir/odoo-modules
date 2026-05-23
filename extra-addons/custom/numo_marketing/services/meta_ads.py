@@ -6,7 +6,7 @@ from .base_adapter import BaseAdAdapter
 
 _logger = logging.getLogger(__name__)
 
-API_VERSION = 'v25.0'
+API_VERSION = 'v21.0'
 BASE_URL = f'https://graph.facebook.com/{API_VERSION}'
 
 
@@ -25,9 +25,6 @@ class MetaAdsAdapter(BaseAdAdapter):
         account_id = self.credentials['ad_account_id']
         df, dt = self._date_range_str(date_from, date_to)
 
-        # Meta requires act_ prefix on ad account IDs
-        if not account_id.startswith('act_'):
-            account_id = f"act_{account_id}"
         url = f"{BASE_URL}/{account_id}/insights"
         params = {
             'access_token': token,

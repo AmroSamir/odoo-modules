@@ -93,29 +93,6 @@ If verification fails, iterate in the same turn until it passes. No
   model declares, even if hidden — Odoo only persists field values that
   are present in the rendered view. Add `<field name="x" column_invisible="1"/>`
   for any required FK that the user shouldn't see.
-- **`/web/image/<model>/<id>/<field>` URLs cache by URL alone.** The
-  browser doesn't care that the underlying binary has changed; same path
-  → same bytes. If the field's content can flip (e.g. a thumbnail that's
-  `related='current_version_id.file_data'`), append a cache-buster like
-  `?unique=<id-of-the-record-that-changed>` everywhere the URL is built
-  server-side. Without it the first version's image is cached forever.
-- **Stored compute fields aren't flushed to the DB until the field is
-  read.** Wizards that return `act_window_close` and OWL `onClose`
-  callbacks that immediately re-fetch data routinely beat Odoo's lazy
-  recompute, so the next RPC reads stale values from the DB. After
-  creating a child record that triggers a parent's stored compute, do
-  `parent.invalidate_recordset([fname])` + `parent.flush_recordset([fname])`
-  inside the child's `create()` so the DB column is fresh before the
-  next request lands. See `creative_studio/models/proofing_version.py`.
-- **Splitting a module into a standalone repo: keep the on-disk
-  directory name == the manifest's name.** Odoo's manifest, `__init__`
-  imports, and `web.assets_backend` paths all reference that exact
-  directory name. The GitHub repo name is just a label — clone with the
-  manifest name as the destination dir (e.g.
-  `git clone https://github.com/.../numo_creative_studio.git creative_studio`).
-  Mirror the parent split with `git rm -r --cached <path>` +
-  `.gitignore` entry pointing to the standalone repo (see commits
-  `f63fc10` for numo_custom_odoo and `f2447fc` for creative_studio).
 
 ## Project Overview
 

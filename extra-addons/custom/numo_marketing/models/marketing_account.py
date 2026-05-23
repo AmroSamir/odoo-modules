@@ -68,10 +68,9 @@ class MarketingAccount(models.Model):
         ('partial', 'Partial'),
     ], string='Last Sync Status', readonly=True)
 
-    _platform_account_unique = models.Constraint(
-        'unique(platform, snapchat_ad_account_id, meta_ad_account_id, '
-        'google_customer_id, tiktok_advertiser_id, x_ad_account_id, company_id)',
-        'Duplicate ad account for this platform.',
+    _platform_company_unique = models.Constraint(
+        'unique(platform, company_id)',
+        'Only one account per platform per company is allowed.',
     )
 
     def get_credentials(self):
@@ -108,30 +107,6 @@ class MarketingAccount(models.Model):
             },
         }
         return cred_map.get(self.platform, {})
-
-    # -------------------------------------------------------------------------
-    # OAuth Actions
-    # -------------------------------------------------------------------------
-    def action_authorize_snapchat(self):
-        """Redirect user to Snapchat OAuth2 authorization page."""
-        self.ensure_one()
-        if not self.snapchat_client_id:
-            return self._notify('Please fill in Snapchat Client ID first.', 'warning')
-        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
-        redirect_uri = f'{base_url}/snap/callback'
-        auth_url = (
-            'https://accounts.snapchat.com/login/oauth2/authorize'
-            f'?client_id={self.snapchat_client_id}'
-            f'&redirect_uri={redirect_uri}'
-            '&response_type=code'
-            '&scope=snapchat-marketing-api'
-            f'&state={self.id}'
-        )
-        return {
-            'type': 'ir.actions.act_url',
-            'url': auth_url,
-            'target': 'self',
-        }
 
     # -------------------------------------------------------------------------
     # Sync Actions
