@@ -93,6 +93,15 @@ If verification fails, iterate in the same turn until it passes. No
   model declares, even if hidden — Odoo only persists field values that
   are present in the rendered view. Add `<field name="x" column_invisible="1"/>`
   for any required FK that the user shouldn't see.
+- **Never use `git commit -am` in this workspace.** It auto-stages every
+  modified tracked file, and the workspace routinely sits with dirty
+  WIP across modules (e.g. `numo_marketing` views in mid-edit). A
+  `docs(claude.md):` commit then silently bundles 9 unrelated marketing
+  files and gets pushed with a misleading subject. Always stage
+  explicitly: `git add CLAUDE.md && git commit -m "docs: ..."`. If you
+  already shipped a bundled commit, `git revert <sha>` + restore the
+  unrelated files from the reverted sha back into the unstaged working
+  tree (see commit `58e77a0` for the recovery pattern).
 
 ## Project Overview
 
